@@ -13,10 +13,14 @@ dependencies = [
     "xpectral-chart>=1.0.0",
 ]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [dependency-groups]
 dev = [
-    "ruff>=0.6",
-    "pre-commit>=4.4.0",
+    "ruff>=0.6",                      # code formatter and linter
+    "pre-commit>=4.4.0",              # git hook manager
 ]
 
 [tool.uv]
