@@ -17,14 +17,8 @@ jupyter lab
 
 ## Notebook convention
 
-Notebooks live flat in `notebooks/`, named `NNN_description.ipynb` (e.g.
-`001_setup_check.ipynb`, `002_signal_x.ipynb`). Every notebook's first cell
-must be:
-
-```python
-%load_ext autoreload
-%autoreload 2
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the notebook and project naming
+convention.
 
 ## Linting
 
