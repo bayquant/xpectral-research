@@ -176,34 +176,6 @@ wheels = [
 ]
 
 [[package]]
-name = "boto3"
-version = "1.43.52"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "botocore" },
-    { name = "jmespath" },
-    { name = "s3transfer" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/93/5f98e422ced57a359e3b7827ab79b359d67456abb9c5840b0c5eb7b90e6b/boto3-1.43.52.tar.gz", hash = "sha256:3da09a393c050906d407023bee5fb5b5fb333378513af1a1a51159db870b572f", size = 112680, upload-time = "2026-07-20T19:31:28.396Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a7/57/31e6f45c3e236273f9f83f047ae579a90c4be8c6dc1b8366d63a6dcd9841/boto3-1.43.52-py3-none-any.whl", hash = "sha256:1af1950c2b2400267c93d971d588367fc73554e02b4f435a50a5e930a7c93526", size = 140026, upload-time = "2026-07-20T19:31:26.247Z" },
-]
-
-[[package]]
-name = "botocore"
-version = "1.43.52"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jmespath" },
-    { name = "python-dateutil" },
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/4d/18/f6f02b1acea9a7c42571813ad4c3e19460206e67ca99af402b7ae3d7584d/botocore-1.43.52.tar.gz", hash = "sha256:3c25e11796ae6e295f1cc3a7760e808c26c432cd580d6a608f32da24715c389b", size = 15717429, upload-time = "2026-07-20T19:31:17.296Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/e8/99f83445500c565e1850b20d510821d1eb635283171573340aa310d478b5/botocore-1.43.52-py3-none-any.whl", hash = "sha256:43715e971b306f86d5918b3b728ec62aae3f4be49e1606058ef1f0b87dcbad9e", size = 15402564, upload-time = "2026-07-20T19:31:13.936Z" },
-]
-
-[[package]]
 name = "certifi"
 version = "2026.6.17"
 source = { registry = "https://pypi.org/simple" }
@@ -500,15 +472,6 @@ wheels = [
 ]
 
 [[package]]
-name = "diskcache"
-version = "5.6.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/3f/21/1c1ffc1a039ddcc459db43cc108658f32c57d271d7289a2794e401d0fdb6/diskcache-5.6.3.tar.gz", hash = "sha256:2c3a3fa2743d8535d832ec61c2054a1641f41775aa7c556758a109941e33e4fc", size = 67916, upload-time = "2023-08-31T06:12:00.316Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/27/4570e78fc0bf5ea0ca45eb1de3818a23787af9b390c0b0a0033a1b8236f9/diskcache-5.6.3-py3-none-any.whl", hash = "sha256:5e31b2d5fbad117cc363ebaf6b689474db18a1f6438bc82358b024abd4c2ca19", size = 45550, upload-time = "2023-08-31T06:11:58.822Z" },
-]
-
-[[package]]
 name = "distlib"
 version = "0.4.3"
 source = { registry = "https://pypi.org/simple" }
@@ -741,15 +704,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d", size = 245115, upload-time = "2025-03-05T20:05:02.478Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67", size = 134899, upload-time = "2025-03-05T20:05:00.369Z" },
-]
-
-[[package]]
-name = "jmespath"
-version = "1.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d3/59/322338183ecda247fb5d1763a6cbe46eff7222eaeebafd9fa65d4bf5cb11/jmespath-1.1.0.tar.gz", hash = "sha256:472c87d80f36026ae83c6ddd0f1d05d4e510134ed462851fd5f754c8c3cbb88d", size = 27377, upload-time = "2026-01-22T16:35:26.279Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl", hash = "sha256:a5663118de4908c91729bea0acadca56526eb2698e83de10cd116ae0f4e97c64", size = 20419, upload-time = "2026-01-22T16:35:24.919Z" },
 ]
 
 [[package]]
@@ -2048,18 +2002,6 @@ wheels = [
 ]
 
 [[package]]
-name = "s3transfer"
-version = "0.19.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "botocore" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/65/da/4bef7ce7bb989b222aa4785a413896dbec53306dfc59c6ce7d16a7ffbd6a/s3transfer-0.19.1.tar.gz", hash = "sha256:d3d6371dc3f1e5c5427b2b457bcf13bcf87bec334c95aed18642eae61f6926f3", size = 165354, upload-time = "2026-07-10T19:32:04.849Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/24/23/e84c64ad0e8bc59cd1b2ef98def848deff0ef3456c542afe74d51e9e8c85/s3transfer-0.19.1-py3-none-any.whl", hash = "sha256:d5fd7005ee39307455ad5f310b5ea67f4b1960d7fed5b3671ee50c249de675de", size = 90072, upload-time = "2026-07-10T19:32:03.673Z" },
-]
-
-[[package]]
 name = "send2trash"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2318,70 +2260,33 @@ wheels = [
 
 [[package]]
 name = "xpectral-chart"
-version = "1.0.4"
-source = { editable = "../xpectral-chart" }
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bokeh" },
     { name = "pandas" },
     { name = "polars" },
     { name = "pyarrow" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "bokeh", specifier = "==3.8.1" },
-    { name = "pandas", specifier = ">=2.3.3" },
-    { name = "polars", specifier = ">=1.34.0" },
-    { name = "pyarrow", specifier = ">=21.0.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "furo", specifier = ">=2024.0" },
-    { name = "ipykernel", specifier = ">=7.0.1" },
-    { name = "myst-parser", specifier = ">=3.0" },
-    { name = "pre-commit", specifier = ">=4.4.0" },
-    { name = "pytest", specifier = ">=8.0.0" },
-    { name = "ruff", specifier = ">=0.6" },
-    { name = "sphinx", specifier = ">=8.0" },
-    { name = "sphinx-autodoc-typehints", specifier = ">=2.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/bc/8e/9b1349e9b5d083b76ea1b3904d6e40a5fa519162fb67cf4f1e63d2ec7ac3/xpectral_chart-1.0.0.tar.gz", hash = "sha256:27d3cdb855352ebc65b69e75d333792b90662f99a5a3f44056317cf7961d2238", size = 1692866, upload-time = "2026-07-03T16:53:48.678Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/60/beef8e458a5ab37a99e8aeb2a7b17af2e50c81663753862a114345ff8b96/xpectral_chart-1.0.0-py3-none-any.whl", hash = "sha256:87b46dc269a3c3c1377768767207ea8cdfc7932d4582e477103fc4a2509c171a", size = 22015, upload-time = "2026-07-03T16:53:47.483Z" },
 ]
 
 [[package]]
 name = "xpectral-quant"
 version = "1.0.1"
-source = { editable = "../xpectral-quant" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "boto3" },
-    { name = "diskcache" },
     { name = "massive" },
     { name = "numpy" },
     { name = "polars" },
     { name = "pyarrow" },
     { name = "python-dotenv" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "boto3", specifier = ">=1.34" },
-    { name = "diskcache", specifier = ">=5.6.3" },
-    { name = "massive", specifier = ">=2.8.0" },
-    { name = "numpy", specifier = ">=1.26" },
-    { name = "polars", specifier = ">=1.34.0" },
-    { name = "pyarrow", specifier = ">=21.0.0" },
-    { name = "python-dotenv", specifier = ">=1.2.1" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "furo", specifier = ">=2024.0" },
-    { name = "ipykernel", specifier = ">=7.0.1" },
-    { name = "myst-parser", specifier = ">=3.0" },
-    { name = "pre-commit", specifier = ">=4.4.0" },
-    { name = "pytest", specifier = ">=8.0.0" },
-    { name = "ruff", specifier = ">=0.6" },
-    { name = "sphinx", specifier = ">=8.0" },
-    { name = "sphinx-autodoc-typehints", specifier = ">=2.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/5f/80/35378849efb42fc813160bea1bad1094a9fc2ae1d29a458eca0e8def29c8/xpectral_quant-1.0.1.tar.gz", hash = "sha256:06fa9db17149001b69e06fc21f1e120d9c625106f33e3f07e44f4b2f358b5137", size = 1906178, upload-time = "2026-07-03T17:27:17.154Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8a/21/055b47b139ef5e875add46b17dc63ba6c348368c9d6e96aafa292eaf71e1/xpectral_quant-1.0.1-py3-none-any.whl", hash = "sha256:42df49ad0e184086c6869a57d7ad8d6b93d345466b7d2d12e6308c1432b993f9", size = 13378, upload-time = "2026-07-03T17:27:16Z" },
 ]
 
 [[package]]
@@ -2411,8 +2316,8 @@ requires-dist = [
     { name = "matplotlib", specifier = ">=3.8" },
     { name = "numpy", specifier = ">=1.26" },
     { name = "pandas", specifier = ">=2.2" },
-    { name = "xpectral-chart", editable = "../xpectral-chart" },
-    { name = "xpectral-quant", editable = "../xpectral-quant" },
+    { name = "xpectral-chart", specifier = ">=1.0.0" },
+    { name = "xpectral-quant", specifier = ">=1.0.1" },
 ]
 
 [package.metadata.requires-dev]
