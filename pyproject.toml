@@ -26,6 +26,13 @@ dev = [
 [tool.uv]
 package = false
 
+# local checkouts installed editable so changes there are picked up without
+# reinstalling or bumping a version; requires the sibling repos to exist at
+# ../xpectral-quant and ../xpectral-chart, otherwise `uv sync` errors (no PyPI fallback)
+[tool.uv.sources]
+xpectral-quant = { path = "../xpectral-quant", editable = true }
+xpectral-chart = { path = "../xpectral-chart", editable = true }
+
 [tool.ruff]
 line-length = 88
 target-version = "py312"
