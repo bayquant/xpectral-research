@@ -57,6 +57,11 @@ Updates:
                 (because the csv format from /v7/finance/download/ is no longer available)
 """
 
+# ----------------------------------------------------------------------------
+# Imports
+# ----------------------------------------------------------------------------
+
+# Standard library imports
 import logging
 import os
 import random
@@ -70,6 +75,7 @@ from typing import Iterable, Literal, NamedTuple
 from urllib.parse import quote, urlencode
 from zoneinfo import ZoneInfo
 
+# Third-party imports
 import requests
 from matplotlib.axes import Axes
 from matplotlib.dates import YearLocator, date2num
@@ -89,6 +95,10 @@ from matplotlib.pyplot import (
     ylabel,
     ylim,
 )
+
+# ----------------------------------------------------------------------------
+# Globals and constants
+# ----------------------------------------------------------------------------
 
 # ADJUST INPUT_DATA_DIR AS NECESSARY FOR YOUR LOCAL ENVIRONMENT
 # csv files with open and close prices will be downloaded to INPUT_DATA_DIR
@@ -403,6 +413,11 @@ SYMBOL_DETAILS_DICT: SymbolDetailsDict = MappingProxyType(
 )
 
 
+# ----------------------------------------------------------------------------
+# General API
+# ----------------------------------------------------------------------------
+
+
 def return_percent_to_string(r_pct: float) -> str:
     """Turn the return r_pct (expressed in units of percent) into a string suitable for display."""
     r_str = (
@@ -426,7 +441,7 @@ def return_percent_to_string(r_pct: float) -> str:
     return (" " if r_pct < 0 else "") + r_str
 
 
-def format_money_as_string(m: float, currency_sym: str = None) -> str:
+def format_money_as_string(m: float, currency_sym: str | None = None) -> str:
     """Turn the float m into a string suitable for display."""
     money_as_string = (
         ("%." + str(ceil(-log10(m))) + "f") % m
@@ -514,15 +529,15 @@ def download_data_from_yahoo_finance(sym: str) -> None:
 
     Note:  Yahoo! Finance occasionally changes something that breaks this download.
            If you find this routine broken, please email me with the error, and I will try to find a fix."""
-    d1 = DEFAULT_START_DATE
-    d2 = (
+    start = DEFAULT_START_DATE
+    end = (
         SYMBOL_DETAILS_DICT.get(sym, {}).get("end_date") or DEFAULT_END_DATE
     ) + timedelta(days=1)
     url_params = dict(
         interval="1d",
         events="history",
-        period1=int(mktime((d1.year, d1.month, d1.day, 0, 0, 0, 0, 0, 0))),
-        period2=int(mktime((d2.year, d2.month, d2.day, 0, 0, 0, 0, 0, 0))),
+        period1=int(mktime((start.year, start.month, start.day, 0, 0, 0, 0, 0, 0))),
+        period2=int(mktime((end.year, end.month, end.day, 0, 0, 0, 0, 0, 0))),
         includeAdjustedClose="true",
     )
     my_url = (
@@ -651,8 +666,8 @@ class OneDatePrices(NamedTuple):
 
 def get_prices_open_close_adj_dates(
     original_data: list[str],
-    start_date: datetime = None,
-    end_date: datetime = None,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
     bad_data_dates: Iterable[datetime] = (),
 ) -> list[OneDatePrices]:
     """Check original_data for a few known problems, and return a list of OneDatePrices.
@@ -927,7 +942,7 @@ class PlotData(object):
         print("  (*See code for details.)")
 
 
-def get_plot_data(sym: str, start_date: datetime = None) -> PlotData:
+def get_plot_data(sym: str, start_date: datetime | None = None) -> PlotData:
     """Extract the returns we want to plot from historical open and close prices."""
     data = get_historical_open_close_data(sym)
     s = SYMBOL_DETAILS_DICT.get(sym, {})
@@ -992,7 +1007,7 @@ def plot_returns_linear(plot_data: PlotData) -> None:
 
 
 def plot_returns_log(
-    plot_data: PlotData, *, currency_sym: str = None, show_returns: bool = False
+    plot_data: PlotData, *, currency_sym: str | None = None, show_returns: bool = False
 ) -> tuple[str, str]:
     """Draw a plot of cumulative returns.
     @return: (cumulative_overnight_return_str, cumulative_intraday_return_str)"""
