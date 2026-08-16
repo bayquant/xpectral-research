@@ -11,6 +11,7 @@ dependencies = [
     "matplotlib>=3.8",
     "xpectral-quant>=1.0.1",
     "xpectral-chart>=1.0.0",
+    "riskfolio-lib>=7.3.0",
 ]
 
 [build-system]
@@ -19,8 +20,8 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.6",                      # code formatter and linter
-    "pre-commit>=4.4.0",              # git hook manager
+    "ruff>=0.6",  # code formatter and linter
+    "pre-commit>=4.4.0",  # git hook manager
 ]
 
 [tool.uv]
