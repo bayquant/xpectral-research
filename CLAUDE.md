@@ -2,12 +2,12 @@
 
 ## Notebook and project naming convention
 
-Everything in `notebooks/` shares a single sequence number, whether it's a
+Everything in `research/` shares a single sequence number, whether it's a
 standalone notebook or a folder of resources:
 
 ```
-notebooks/NNN_slug.ipynb    # standalone notebook, no supporting resources
-notebooks/NNN_slug/         # project folder, when resources are needed
+research/NNN_slug.ipynb    # standalone notebook, no supporting resources
+research/NNN_slug/         # project folder, when resources are needed
 ```
 
 Numbers are unique across both forms and assigned in chronological order —
@@ -19,12 +19,23 @@ Use a fixed entry-point notebook name (`analysis.ipynb`), not the slug again,
 and organize supporting resources into generic subfolders as needed:
 
 ```
-notebooks/NNN_slug/
+research/NNN_slug/
 ├── analysis.ipynb   # entry point
+├── report.typ        # optional typst paper, lives alongside the notebook(s)
 ├── data/            # raw or processed datasets (csv, parquet, etc.)
 ├── assets/          # reference material: papers, PDFs, images, slides
 ├── scripts/         # standalone .py helpers not meant to be imported
-└── output/          # generated artifacts: figures, tables, exported results
+└── output/          # generated artifacts: figures, tables, exported results, compiled .typ PDFs
+```
+
+### Typst papers
+
+A `.typ` file lives in the same folder as its notebook(s) — not in `assets/`
+or a separate `papers/` tree. Compile it into `output/`, never next to the
+source file:
+
+```
+typst compile report.typ output/report.pdf
 ```
 
 If a project folder needs more than one entry-point notebook, prefix each
