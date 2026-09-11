@@ -15,5 +15,5 @@ uv pip install -e ../xpectral-quant -e ../xpectral-chart
 
 This keeps `pyproject.toml` and `uv.lock` pointed at the published versions
 for everyone else. The editable install only affects your local venv, so a
-future `uv sync` will remove it again — reinstall with the command above
+future `uv sync` will remove it again. Reinstall with the command above
 whenever that happens.

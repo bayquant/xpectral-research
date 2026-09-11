@@ -22,9 +22,9 @@
   Almgren and Chriss @almgren2000. An investor holding $X$ shares must
   liquidate the full position by a fixed horizon $T$. Liquidating quickly
   concentrates trading into a short window and pushes execution prices away
-  from the pre-trade price — *market impact*. Liquidating slowly avoids that
+  from the pre-trade price: *market impact*. Liquidating slowly avoids that
   cost but leaves the position exposed to the market's random drift for
-  longer — *timing risk*. Almgren and Chriss cast this trade-off as a
+  longer: *timing risk*. Almgren and Chriss cast this trade-off as a
   mean-variance optimization over the liquidation schedule.
 
   Discretize the horizon into $N$ steps of length $tau = T slash N$. Let
@@ -36,7 +36,7 @@
   given rate, which decays once trading stops), and volatility $sigma$ (the
   size of the position's random price moves per unit time).
 
-  Permanent impact contributes $1/2 gamma X^2$ to expected cost — fixed by
+  Permanent impact contributes $1/2 gamma X^2$ to expected cost: fixed by
   the total size $X$ and unaffected by the schedule, since every admissible
   schedule liquidates the same $X$. Temporary impact contributes
   $(eta slash tau) sum_(k=1)^N n_k^2$: because the cost of a step is
@@ -54,11 +54,11 @@
     kappa = sqrt(lambda sigma^2 slash eta). $
   The single parameter $kappa$ governs the shape of the liquidation curve.
   As $lambda -> 0$ (risk-neutral), $kappa -> 0$ and the schedule becomes
-  linear — a constant liquidation rate, i.e. minimum-impact, TWAP-like
+  linear: a constant liquidation rate, i.e. minimum-impact, TWAP-like
   execution. As $lambda$ grows, $kappa$ grows and the curve front-loads:
   more of the position is sold early, trading higher impact cost for lower
   exposure to timing risk. The quantity $1 slash kappa$ sets the
-  characteristic time scale — the "half-life" — over which the position is
+  characteristic time scale (the "half-life") over which the position is
   unwound.
 
   Temporary price impact is taken to be linear in the trading rate:
@@ -96,7 +96,7 @@
   align: (center, left, center),
   table.header([*symbol*], [*meaning*], [*units*]),
   [$v(t)$],
-  [market's instantaneous dollar volume rate — the rate at which the tape
+  [market's instantaneous dollar volume rate: the rate at which the tape
    prints, at calendar time $t$],
   [\$/day],
 
@@ -105,7 +105,7 @@
   [\$],
 
   [$V$],
-  [a fixed reference daily volume — ADV, used only to rescale],
+  [a fixed reference daily volume: ADV, used only to rescale],
   [\$/day],
 
   [$dot(x)(t)$],
@@ -121,7 +121,7 @@
   [dimensionless],
 
   [$pi(t) = dot(x)(t) \/ v(t)$],
-  [participation rate — your trading rate as a fraction of market volume],
+  [participation rate: your trading rate as a fraction of market volume],
   [dimensionless],
 )
 
@@ -160,5 +160,5 @@ $ x(t) = X (sinh(kappa(T-t))) / (sinh(kappa T)). $
 indeterminate; using $sinh(z) approx z$ for small $z$,
 $ (sinh(kappa(T-t))) / (sinh(kappa T))
   ->_(kappa -> 0) (kappa(T-t)) / (kappa T) = (T-t) / T, $
-so $x(t) = X(1 - t slash T)$ — constant-rate liquidation, recovering the
+so $x(t) = X(1 - t slash T)$: constant-rate liquidation, recovering the
 $lambda = 0$ (pure minimum-impact) case.

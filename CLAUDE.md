@@ -12,8 +12,8 @@ research/nnn_slug.ipynb    # standalone notebook, no supporting resources
 research/nnn_slug/         # project folder, when resources are needed
 ```
 
-Numbers are unique across both forms and assigned in chronological order —
-don't reuse or reorder them.
+Numbers are unique across both forms and assigned in chronological order.
+Don't reuse or reorder them.
 
 ### Inside a Project Folder
 
@@ -22,7 +22,7 @@ and organize supporting resources into generic subfolders as needed:
 
 ```
 research/nnn_slug/
-├── analysis.ipynb   # entry point (or a notebooks/ folder — see below)
+├── analysis.ipynb   # entry point (or a notebooks/ folder, see below)
 ├── report/          # optional typst paper and its resources (report.typ, references.bib, ...)
 ├── data/            # raw or processed datasets (csv, parquet, etc.)
 ├── assets/          # reference material: papers, PDFs, images, slides
@@ -34,12 +34,12 @@ If a project folder needs more than one entry-point notebook, prefix each
 with `analysis_` followed by a short description (e.g. `analysis_mst.ipynb`,
 `analysis_random_walks.ipynb`) instead of a single `analysis.ipynb`.
 
-Only add the subfolders a project actually needs — don't scaffold empty ones.
+Only add the subfolders a project actually needs. Don't scaffold empty ones.
 If a project folder ever needs more than one notebook, add a `notebooks/`
 subfolder inside it too.
 
-Typst-related files — the `.typ` source, `references.bib`, and anything
-else the paper needs — live together in a `report/` folder inside the
+Typst-related files (the `.typ` source, `references.bib`, and anything
+else the paper needs) live together in a `report/` folder inside the
 project, not in `assets/` or a separate top-level `papers/` tree. Compile
 into the project's `output/`, never next to the source file:
 
@@ -52,7 +52,7 @@ instead of the `nnn_slug` scheme:
 
 - Papers: `{short-title}-{last-name}-{year}.ext` (e.g.
   `empirical-properties-asset-returns-cont-2001.pdf`)
-- Everything else (notes, images, slides): `{title}.ext` — no author needed
+- Everything else (notes, images, slides): `{title}.ext`, no author needed
 
 Author rules: last name only, never first name. 1–2 authors → list both
 (`percival-gregory`); 3+ authors → first author + `et-al` (`kong-et-al`).
