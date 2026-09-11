@@ -1,41 +1,33 @@
 # CLAUDE.md
 
-## Notebook and project naming convention
+## Naming Convention and Organization
+
+### Sequence Numbering
 
 Everything in `research/` shares a single sequence number, whether it's a
 standalone notebook or a folder of resources:
 
 ```
-research/NNN_slug.ipynb    # standalone notebook, no supporting resources
-research/NNN_slug/         # project folder, when resources are needed
+research/nnn_slug.ipynb    # standalone notebook, no supporting resources
+research/nnn_slug/         # project folder, when resources are needed
 ```
 
 Numbers are unique across both forms and assigned in chronological order —
 don't reuse or reorder them.
 
-### Inside a project folder
+### Inside a Project Folder
 
 Use a fixed entry-point notebook name (`analysis.ipynb`), not the slug again,
 and organize supporting resources into generic subfolders as needed:
 
 ```
-research/NNN_slug/
-├── analysis.ipynb   # entry point
-├── report.typ        # optional typst paper, lives alongside the notebook(s)
+research/nnn_slug/
+├── analysis.ipynb   # entry point (or a notebooks/ folder — see below)
+├── report/          # optional typst paper and its resources (report.typ, references.bib, ...)
 ├── data/            # raw or processed datasets (csv, parquet, etc.)
 ├── assets/          # reference material: papers, PDFs, images, slides
 ├── scripts/         # standalone .py helpers not meant to be imported
 └── output/          # generated artifacts: figures, tables, exported results, compiled .typ PDFs
-```
-
-### Typst papers
-
-A `.typ` file lives in the same folder as its notebook(s) — not in `assets/`
-or a separate `papers/` tree. Compile it into `output/`, never next to the
-source file:
-
-```
-typst compile report.typ output/report.pdf
 ```
 
 If a project folder needs more than one entry-point notebook, prefix each
@@ -46,8 +38,17 @@ Only add the subfolders a project actually needs — don't scaffold empty ones.
 If a project folder ever needs more than one notebook, add a `notebooks/`
 subfolder inside it too.
 
+Typst-related files — the `.typ` source, `references.bib`, and anything
+else the paper needs — live together in a `report/` folder inside the
+project, not in `assets/` or a separate top-level `papers/` tree. Compile
+into the project's `output/`, never next to the source file:
+
+```
+typst compile report/report.typ output/report.pdf
+```
+
 Files in `assets/` aren't Python modules, so name them with kebab-case
-instead of the `NNN_slug` scheme:
+instead of the `nnn_slug` scheme:
 
 - Papers: `{short-title}-{last-name}-{year}.ext` (e.g.
   `empirical-properties-asset-returns-cont-2001.pdf`)
