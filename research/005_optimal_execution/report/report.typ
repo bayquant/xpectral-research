@@ -18,7 +18,7 @@
 
   = Market Impact Model
 
-  To specify the cost of trading, we adopt the market-impact framework of
+  As the foundational market-impact model, we present the framework of
   Almgren and Chriss @almgren2000. An investor holding $X$ shares must
   liquidate the full position by a fixed horizon $T$. Liquidating quickly
   concentrates trading into a short window and pushes execution prices away
@@ -36,9 +36,12 @@
   given rate, which decays once trading stops), and volatility $sigma$ (the
   size of the position's random price moves per unit time).
 
-  Permanent impact contributes $1/2 gamma X^2$ to expected cost: fixed by
-  the total size $X$ and unaffected by the schedule, since every admissible
-  schedule liquidates the same $X$. Temporary impact contributes
+  Permanent impact contributes $1/2 gamma X^2$ to expected cost: each share
+  traded shifts the price by a further increment of $gamma$, so the average
+  share pays half the full depression $gamma X$, giving a total of $X
+  dot.c 1/2 gamma X = 1/2 gamma X^2$. This is fixed by the total size $X$
+  and unaffected by the schedule, since every admissible schedule
+  liquidates the same $X$. Temporary impact contributes
   $(eta slash tau) sum_(k=1)^N n_k^2$: because the cost of a step is
   quadratic in its trading rate, spreading the same shares over more time
   reduces it. The variance of total cost, driven by how many shares remain
