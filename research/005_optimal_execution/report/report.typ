@@ -4,6 +4,9 @@
 
 #align(center)[
   #text(size: 20pt, weight: "bold")[Optimal Execution]
+
+  #v(0.5em)
+  #text(size: 12pt)[BayQuant]
 ]
 
 #v(1em)
@@ -11,17 +14,21 @@
 #columns(2)[
   = Foundational Framework
 
-  As the foundational framework for optimal execution, we present the
-  model of Almgren and Chriss @almgren2000. An investor holding $X$ shares
-  must
-  liquidate the full position by a fixed horizon $T$. Liquidating quickly
+  Trading a large position is never free: executing it moves prices
+  against the trader, and that cost can be a meaningful fraction of the
+  trade's value. Almgren and Chriss's model @almgren2000 is
+  the foundational framework for building a mental model of the trading
+  dynamics of large orders. The setup is simple: an investor holding $X$
+  shares must liquidate the full position by a fixed horizon $T$.
+  Liquidating quickly
   concentrates trading into a short window and pushes execution prices away
   from the pre-trade price: *market impact*. Liquidating slowly reduces
   that cost but leaves the position exposed to the market's random drift for
   longer: *timing risk*. Almgren and Chriss cast this trade-off as a
   mean-variance optimization over the liquidation schedule.
 
-  Discretize the horizon into $N$ steps of length $tau = T slash N$. Let
+  Concretely, discretize the horizon into $N$ steps of length
+  $tau = T slash N$. Let
   $x_k$ denote the shares still held after step $k$, with $x_0 = X$ and
   $x_N = 0$, and let $n_k = x_(k-1) - x_k$ be the shares traded in step $k$.
   Three parameters drive the cost: permanent impact $gamma$ (the lasting
@@ -65,15 +72,9 @@
   unchanged: the objective is direction-blind, since cost enters only
   through $n_k^2$, so only the boundary conditions flip, from
   $x_0 = X, x_N = 0$ to $x_0 = 0, x_N = X$. The optimal buy schedule is the
-  exact time-reversal of the sell schedule,
-  $x_"buy"(t) = X sinh(kappa t) slash sinh(kappa T)$, obtained from the sell
-  formula by swapping $t <-> T-t$.
-
-  Temporary price impact is taken to be linear in the trading rate:
-  executing at rate $dot(x)(t)$ displaces the execution price by an amount
-  proportional to $dot(x)(t)$. Because the cost accrued over an instant is
-  the product of this displacement and the amount traded, it is quadratic
-  in the rate, consistent with the $eta n_k^2 slash tau$ term above.
+  exact time-reversal of the sell schedule, obtained from the sell formula
+  by swapping $t <-> T-t$:
+  $ x(t) = X (sinh(kappa t)) / (sinh(kappa T)). $
 ]
 
 #bibliography("references.bib", title: "References", style: "ieee")
