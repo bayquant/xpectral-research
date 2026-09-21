@@ -3,28 +3,21 @@
 #set par(justify: true)
 
 #align(center)[
-  #text(size: 20pt, weight: "bold")[Optimal Event Trading]
+  #text(size: 20pt, weight: "bold")[Optimal Execution]
 ]
 
 #v(1em)
 
 #columns(2)[
-  = Introduction
-
-  Event driven hedge funds rely on forming views on catalysts to generate PnL.
-  In the case of earnings, a PM can generate 25% to 50% of their PnL from
-  these bets. Thus, it is important to develop a framework for positioning
-  and trading around events.
-
-  = Optimal Execution
+  = Foundational Framework
 
   As the foundational framework for optimal execution, we present the
   model of Almgren and Chriss @almgren2000. An investor holding $X$ shares
   must
   liquidate the full position by a fixed horizon $T$. Liquidating quickly
   concentrates trading into a short window and pushes execution prices away
-  from the pre-trade price: *market impact*. Liquidating slowly avoids that
-  cost but leaves the position exposed to the market's random drift for
+  from the pre-trade price: *market impact*. Liquidating slowly reduces
+  that cost but leaves the position exposed to the market's random drift for
   longer: *timing risk*. Almgren and Chriss cast this trade-off as a
   mean-variance optimization over the liquidation schedule.
 
@@ -33,9 +26,10 @@
   $x_N = 0$, and let $n_k = x_(k-1) - x_k$ be the shares traded in step $k$.
   Three parameters drive the cost: permanent impact $gamma$ (the lasting
   price shift per share traded, which the market never unwinds), temporary
-  impact $eta$ (the transient price concession demanded for trading at a
+  impact $eta$ (the transient price concession incurred for trading at a
   given rate, which decays once trading stops), and volatility $sigma$ (the
-  size of the position's random price moves per unit time).
+  size, in dollars per share, of the asset's random price moves per unit
+  time).
 
   Permanent impact contributes $1/2 gamma X^2$ to expected cost: each share
   traded shifts the price by a further increment of $gamma$, so the average
@@ -64,6 +58,8 @@
   exposure to timing risk. The quantity $1 slash kappa$ sets the
   characteristic time scale (the "half-life") over which the position is
   unwound.
+
+  #image("../output/optimal_holdings_trajectory.png", width: 100%)
 
   Accumulating a position instead of liquidating one leaves this analysis
   unchanged: the objective is direction-blind, since cost enters only
@@ -112,6 +108,11 @@
   [shares traded in step $k$],
   [shares],
 
+  [$n_k slash tau$],
+  [trading rate during step $k$: shares traded per unit time, not to be
+   confused with $n_k$ itself],
+  [shares/day],
+
   [$gamma$],
   [permanent-impact coefficient: the persistent price shift per share
    traded],
@@ -135,10 +136,15 @@
   [1/day],
 )
 
+$gamma$ and $eta$ each carry an extra factor of $1 slash "share"$ beyond
+what "a price shift per share traded" suggests, because *price* is itself
+quoted in \$/share: a shift in that per-share price, per share traded, is
+(\$/share)/share = \$/share².
+
 == Almgren-Chriss derivation
 
 Following @almgren2000, the discrete-time objective introduced in the
-Optimal Execution section is
+Foundational Framework section is
 $ min_(x_1,\, dots,\, x_(N-1)) quad
   underbrace(1/2 gamma X^2 + eta/tau sum_(k=1)^N n_k^2, EE["cost"])
   + lambda underbrace(sigma^2 sum_(k=1)^N tau x_k^2, VV["cost"]). $

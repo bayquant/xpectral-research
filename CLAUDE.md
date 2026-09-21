@@ -41,10 +41,13 @@ subfolder inside it too.
 Typst-related files (the `.typ` source, `references.bib`, and anything
 else the paper needs) live together in a `report/` folder inside the
 project, not in `assets/` or a separate top-level `papers/` tree. Compile
-into the project's `output/`, never next to the source file:
+into the project's `output/`, never next to the source file. If the report
+embeds a generated chart from `output/` (e.g. a figure exported by the
+notebook), pass `--root .` from the project folder so Typst's sandbox
+covers both `report/` and `output/`:
 
 ```
-typst compile report/report.typ output/report.pdf
+typst compile --root . report/report.typ output/report.pdf
 ```
 
 Files in `assets/` aren't Python modules, so name them with kebab-case
