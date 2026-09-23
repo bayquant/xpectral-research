@@ -29,10 +29,10 @@
   steps of length $tau = T slash N$, with $x_k$ shares held after step
   $k$ ($x_0 = X$, $x_N = 0$) and $n_k = x_(k-1) - x_k$ shares traded in
   step $k$, the price process is
-  $ S_k = S_(k-1) + #text(fill: red)[$alpha$] tau + sigma sqrt(tau) xi_k - tau g(n_k/tau), $
+  $ S_k = S_(k-1) + #text(fill: red)[$alpha$] tau + sigma sqrt(tau) xi_k - tau g(n_k/tau), quad #link(<eq-price-process-appendix>)[(1)] $ <eq-price-process>
   where $xi_k$ are i.i.d. shocks with zero mean and unit variance, $g(v)$
-  is *permanent impact* (persists in the price process), and the drift
-  #text(fill: red)[$alpha$] is taken as #text(fill: red)[zero] throughout since no private
+  is the *permanent impact* (persists in the price process), and the drift
+  #text(fill: red)[$alpha$] is taken as #text(fill: red)[zero] throughout since no directional
   information is assumed.
   Trading also incurs a *temporary impact* $h(v)$: a transient
   concession on the execution price of a single step, so the price actually 
@@ -43,11 +43,11 @@
 
   == Cost of Trading
 
-  The *implementation shortfall* @perold1988
-  #box[$X S_0 - sum_k n_k tilde(S)_k$#super[#link(<eq-capture>)[(3)]]] is the
+  Following Perold (#cite(<perold1988>, form: "year")), the *implementation shortfall*
+  #box[$X S_0 - sum_k n_k tilde(S)_k$ #link(<eq-capture>)[(2)]] <eq-capture-main> is the
   cost of trading relative to the initial book value. Expanding the
-  capture term $sum_k n_k tilde(S)_k$ (total trading revenue) gives its expectation and
-  variance
+  capture term $sum_k n_k tilde(S)_k$ (total trading revenue) gives the
+  shortfall's expectation and variance
   $ E(x) = sum_k tau x_k g(n_k/tau) + sum_k n_k h(n_k/tau), $
   $ V(x) = sigma^2 sum_k tau x_k^2. $
   Specializing to linear impact, $g(v) = gamma v$ and $h(v) = epsilon
@@ -212,11 +212,27 @@ what "a price shift per share traded" suggests, because *price* is itself
 quoted in \$/share: a shift in that per-share price, per share traded, is
 (\$/share)/share = \$/share².
 
+== Price Process from Continuous Time <eq-price-process-appendix>
+
+The security's price evolves according to Arithmetic Brownian Motion,
+driven by two exogenous factors, volatility and drift, and one
+endogenous factor, market impact: the price movement caused by the
+trader's own activity. Letting $v_t$ denote the trader's continuous
+trading rate, market impact enters as a further endogenous drift term
+$-g(v_t)$ alongside the exogenous drift $alpha$ set by the market:
+$ dif S_t = alpha dif t + sigma dif W_t - g(v_t) dif t. $
+Discretizing the horizon into $N$ steps of length $tau = T slash N$ and
+applying Euler-Maruyama, with $n_k slash tau$ standing in for $v_t$ and
+$W_(t_k) - W_(t_(k-1)) approx sqrt(tau) xi_k$ standing in for the
+Brownian increment over step $k$, gives #link(<eq-price-process>)[equation (1)]:
+$ S_k = S_(k-1) + alpha tau + sigma sqrt(tau) xi_k - tau g(n_k/tau),
+  quad k = 1, dots, N. $
+
 == Capture Identity <eq-capture>
 
 Substituting the price dynamics and temporary-impact price into the
 definition of capture (total trading revenue), $sum_k n_k tilde(S)_k$, and expanding gives
-@almgren2000's equation (3):
+#link(<eq-capture-main>)[equation (2)] (@almgren2000's equation (3)):
 $ sum_(k=0)^N n_k tilde(S)_k = X S_0 + sum_(k=1)^N (sigma sqrt(tau) xi_k -
   tau g(n_k/tau)) x_k - sum_(k=1)^N n_k h(n_k/tau). $
 The first term is the initial market value of the position. The
