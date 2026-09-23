@@ -14,7 +14,7 @@
 #columns(2)[
   == The Trading Dilemma
 
-  Liquidating a large position is never free: execution moves prices
+  Liquidating a large position is no free lunch: execution moves prices
   against the order. Sell it all at once and *market impact* is
   concentrated into a short, severe shock. Spread it out and impact
   cost falls, but the remaining shares sit exposed to the market's
@@ -61,7 +61,7 @@
   $epsilon sum_k abs(n_k) + (eta slash tau) sum_k n_k^2$. Combining, and
   writing $overline(eta) = eta - 1/2 gamma tau$ to absorb the correction,
   $ E(x) = 1/2 gamma X^2 + epsilon sum_k abs(n_k)
-    + (overline(eta) slash tau) sum_k n_k^2. $
+    + overline(eta)/tau sum_k n_k^2. $
   For a monotone schedule ($n_k$ all one sign), $sum_k abs(n_k) = X$, so
   only the last term shapes the schedule. Almgren and Chriss minimize
   $ E(x) + lambda V(x) $
