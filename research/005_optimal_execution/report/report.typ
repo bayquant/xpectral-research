@@ -63,8 +63,9 @@
   $ E(x) = 1/2 gamma X^2 + epsilon sum_k abs(n_k)
     + overline(eta)/tau sum_k n_k^2. $
   For a monotone schedule ($n_k$ all one sign), $sum_k abs(n_k) = X$, so
-  only the last term shapes the schedule. Almgren and Chriss minimize
-  $ E(x) + lambda V(x) $
+  only the last term shapes the schedule. Almgren and Chriss minimize the
+  utility function
+  $ U(x) = E(x) + lambda V(x) $
   over $x_1, dots, x_(N-1)$, where $lambda >= 0$ is risk aversion.
 
   == The Optimal Schedule
@@ -72,15 +73,30 @@
   Dropping the schedule-independent terms $1/2 gamma X^2 + epsilon X$
   and writing $a = overline(eta) slash tau$, $b = lambda sigma^2 tau$ turns
   the objective into the quadratic form
-  $ F = a sum_k (x_(k-1) - x_k)^2 + b sum_k x_k^2. $
-  Setting $partial F / partial x_j = 0$ for each interior $x_j$ gives the
-  recurrence $x_(j+1) - 2 x_j + x_(j-1) = (b/a) x_j$, whose left side is a
-  centered second-difference stencil. Taking $N -> infinity$, the $O(tau)$
-  correction $overline(eta) -> eta$ vanishes, turning this into the
-  continuous-time condition $dot.double(x)(t) = kappa^2 x(t)$
-  with $kappa^2 = lambda sigma^2 slash eta$, solved subject to
-  $x(0) = X$, $x(T) = 0$ by
-  $ x(t) = X (sinh(kappa(T-t))) / (sinh(kappa T)). $
+  $ U = a sum_k (x_(k-1) - x_k)^2 + b sum_k x_k^2, $
+  with the endpoints $x_0 = X$ and $x_N = 0$ held fixed and only the
+  interior holdings $x_1, dots, x_(N-1)$ free.
+
+  *First-order condition.* $U$ is a sum of squares, a convex bowl with a
+  single minimum where every partial derivative vanishes. For an interior
+  $x_j$, the only terms containing it are $(x_(j-1) - x_j)^2$,
+  $(x_j - x_(j+1))^2$, and $b x_j^2$, so
+  $ (partial U)/(partial x_j) = a [-2(x_(j-1) - x_j) + 2(x_j - x_(j+1))]
+    + 2 b x_j = 0. $
+  Dividing by 2 and rearranging gives a recurrence linking each holding to
+  its two neighbors:
+  $ x_(j+1) - 2 x_j + x_(j-1) = b/a x_j. $
+
+  *A discrete second derivative.* The left-hand side is exactly the
+  centered second-difference stencil, $x_(j+1) - 2 x_j + x_(j-1) approx
+  tau^2 dot.double(x)(t_j)$. Dividing by $tau^2$ and taking $N -> infinity$,
+  the $O(tau)$ correction $overline(eta) -> eta$ vanishes, turning the
+  recurrence into the continuous-time condition
+  $ dot.double(x)(t) = kappa^2 x(t), quad kappa^2 = (lambda sigma^2)/eta. $
+
+  Solved subject to $x(0) = X$, $x(T) = 0$, this collapses to the single
+  closed form
+  $ x(t) = X (sinh(kappa(T-t))) / (sinh(kappa T)), quad #link(<eq-ode-solution-appendix>)[(4)] $ <eq-ode-solution>
 
   == The Shape of the Schedule
 
@@ -174,6 +190,11 @@
   [variance of the cost of trading schedule $x$],
   [\$²],
 
+  [$U(x) = E(x) + lambda V(x)$],
+  [utility function minimized over the schedule; convex, so its unique
+   minimum is found by setting $partial U slash partial x_j = 0$],
+  [\$],
+
   [$gamma$],
   [permanent-impact coefficient: the persistent price shift per share
    traded],
@@ -247,3 +268,14 @@ $ sum_k n_k x_(k-1) - sum_k n_k x_k = sum_k n_k^2. $
 Subtracting the second identity from the first and dividing by 2,
 $ sum_k n_k x_k = 1/2 X^2 - 1/2 sum_k n_k^2. $
 Multiplying by $gamma$ gives equation (3).
+
+== Solving the Optimal-Schedule ODE <eq-ode-solution-appendix>
+
+#link(<eq-ode-solution>)[Equation (4)]
+
+The general solution of $dot.double(x)(t) = kappa^2 x(t)$ is
+$x(t) = A e^(kappa t) + B e^(-kappa t)$. Imposing $x(0) = X$ and
+$x(T) = 0$,
+$ A + B = X, quad A e^(kappa T) + B e^(-kappa T) = 0. $
+Solving for $A, B$ and folding the exponentials into hyperbolic sines
+($sinh z = 1/2 (e^z - e^(-z))$) collapses this to equation (4).
