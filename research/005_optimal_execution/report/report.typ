@@ -108,6 +108,29 @@
 
   #image("../output/optimal_holdings_trajectory.png", width: 100%)
 
+  == The Efficient Frontier
+
+  Sweeping $lambda >= 0$ traces out a curve of $(V(x), E(x))$ pairs, one
+  per optimal trajectory: the *efficient frontier* of optimal execution.
+  Each point is the lowest expected cost achievable at that variance; no
+  monotone schedule beats the frontier on both at once. At $lambda = 0$
+  the frontier sits at its minimum-cost, maximum-variance end (the TWAP
+  schedule, which minimizes $sum_k n_k^2$ for fixed $X$); increasing
+  $lambda$ moves along the frontier toward lower variance at higher cost
+  as the schedule front-loads.
+
+  == Half-Life of a Trade
+
+  For $kappa T gt.tilde 1$, $sinh(kappa(T-t)) slash sinh(kappa T) approx
+  e^(-kappa t)$, so holdings decay approximately exponentially,
+  $x(t) approx X e^(-kappa t)$. The time for the position to fall to half
+  its initial size is the *half-life*
+  $ t_(1\/2) = ln(2) / kappa = ln(2) sqrt(eta / (lambda sigma^2)). $
+  Half-life shrinks with risk aversion $lambda$ and volatility $sigma$
+  (faster unwinds when risk is costlier) and grows with the
+  temporary-impact coefficient $eta$ (slower unwinds when trading is more
+  expensive).
+
   == Buying as the Mirror Image
 
   Since cost enters only through $n_k^2$, the objective is direction-blind:
