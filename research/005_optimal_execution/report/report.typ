@@ -2,6 +2,10 @@
 #set text(size: 10pt)
 #set par(justify: true)
 
+#show cite: it => text(fill: rgb("#1a73e8"))[#it]
+#show link: it => text(fill: rgb("#c2410c"))[#it]
+#show regex("^\[\d+\]"): it => text(fill: rgb("#1a73e8"))[#it]
+
 #align(center)[
   #text(size: 20pt, weight: "bold")[Optimal Execution]
 
@@ -43,7 +47,7 @@
 
   == Cost of Trading
 
-  Following Perold (#cite(<perold1988>, form: "year")), the *implementation shortfall*
+  Following Perold (1988) #cite(<perold1988>), the *implementation shortfall*
   #box[$X S_0 - sum_k n_k tilde(S)_k$ #link(<eq-capture>)[(2)]] <eq-capture-main> is the
   cost of trading relative to the initial book value. Expanding the
   capture term $sum_k n_k tilde(S)_k$ (total trading revenue) gives the
