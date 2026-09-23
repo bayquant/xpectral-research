@@ -53,8 +53,8 @@
   Specializing to linear impact, $g(v) = gamma v$ and $h(v) = epsilon
   "sgn"(v) + eta v$ (with $epsilon$ a fixed cost per trade, e.g. half the
   bid-ask spread), summation by parts gives the permanent-impact term
-  $ sum_k tau x_k g(n_k/tau) = gamma sum_k x_k n_k
-    = 1/2 gamma X^2 - 1/2 gamma sum_k n_k^2, $
+  $ sum_k tau x_k g(n_k/tau)
+    = 1/2 gamma X^2 - 1/2 gamma sum_k n_k^2, quad #link(<eq-perm-impact-appendix>)[(3)] $ <eq-perm-impact>
   so its contribution to $E(x)$ is *not* schedule-independent at finite
   $tau$: the correction is $O(tau)$ and only vanishes in the
   continuous-time limit. Temporary impact contributes
@@ -214,30 +214,36 @@ quoted in \$/share: a shift in that per-share price, per share traded, is
 
 == Price Process from Continuous Time <eq-price-process-appendix>
 
-The security's price evolves according to Arithmetic Brownian Motion,
-driven by two exogenous factors, volatility and drift, and one
-endogenous factor, market impact: the price movement caused by the
-trader's own activity. Letting $v_t$ denote the trader's continuous
-trading rate, market impact enters as a further endogenous drift term
-$-g(v_t)$ alongside the exogenous drift $alpha$ set by the market:
-$ dif S_t = alpha dif t + sigma dif W_t - g(v_t) dif t. $
-Discretizing the horizon into $N$ steps of length $tau = T slash N$ and
-applying Euler-Maruyama, with $n_k slash tau$ standing in for $v_t$ and
-$W_(t_k) - W_(t_(k-1)) approx sqrt(tau) xi_k$ standing in for the
-Brownian increment over step $k$, gives #link(<eq-price-process>)[equation (1)]:
+#link(<eq-price-process>)[Equation (1)]
+$ dif S_t = (alpha - g(v_t)) dif t + sigma dif W_t, $
+where $v_t$ is the trader's continuous trading rate. Discretizing via
+Euler-Maruyama, with $n_k slash tau$ standing in for $v_t$ and
+$W_(t_k) - W_(t_(k-1)) approx sqrt(tau) xi_k$ for the Brownian increment
+over step $k$, gives
 $ S_k = S_(k-1) + alpha tau + sigma sqrt(tau) xi_k - tau g(n_k/tau),
   quad k = 1, dots, N. $
 
 == Capture Identity <eq-capture>
 
+#link(<eq-capture-main>)[Equation (2)]
+
 Substituting the price dynamics and temporary-impact price into the
-definition of capture (total trading revenue), $sum_k n_k tilde(S)_k$, and expanding gives
-#link(<eq-capture-main>)[equation (2)] (@almgren2000's equation (3)):
+definition of capture (total trading revenue), $sum_k n_k tilde(S)_k$, and
+expanding gives equation (2):
 $ sum_(k=0)^N n_k tilde(S)_k = X S_0 + sum_(k=1)^N (sigma sqrt(tau) xi_k -
   tau g(n_k/tau)) x_k - sum_(k=1)^N n_k h(n_k/tau). $
-The first term is the initial market value of the position. The
-volatility term $sum sigma sqrt(tau) xi_k x_k$ nets to zero in
-expectation; the permanent-impact term $-sum tau x_k g(n_k/tau)$ is the
-loss from the price drop that persists after each sale; the temporary-
-impact term $-sum n_k h(n_k/tau)$ is the loss confined to the units
-traded in each step.
+
+== Permanent-Impact Summation by Parts <eq-perm-impact-appendix>
+
+#link(<eq-perm-impact>)[Equation (3)]
+
+Since $n_k = x_(k-1) - x_k$,
+$ x_(k-1)^2 - x_k^2 = (x_(k-1) - x_k)(x_(k-1) + x_k) = n_k x_(k-1) + n_k x_k. $
+Summing over $k = 1, dots, N$ telescopes the left side to $x_0^2 - x_N^2 =
+X^2$, giving
+$ sum_k n_k x_(k-1) + sum_k n_k x_k = X^2. $
+Separately, $n_k(x_(k-1) - x_k) = n_k^2$, so
+$ sum_k n_k x_(k-1) - sum_k n_k x_k = sum_k n_k^2. $
+Subtracting the second identity from the first and dividing by 2,
+$ sum_k n_k x_k = 1/2 X^2 - 1/2 sum_k n_k^2. $
+Multiplying by $gamma$ gives equation (3).
