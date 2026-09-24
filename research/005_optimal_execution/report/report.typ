@@ -139,6 +139,15 @@
   $lambda$ moves along the frontier toward lower variance at higher cost
   as the schedule front-loads.
 
+  The figure replicates Figure 1 of @almgren2000 with their test-case
+  parameters ($X = 10^6$ shares, $T = 5$ days, $N = 5$). Past the
+  risk-neutral point B, $lambda < 0$ (dashed) describes a risk-seeking
+  trader who delays selling and pays more in both cost and variance, so
+  that branch is not efficient. The straight line is tangent at $lambda =
+  10^(-6)$ with slope $-lambda$.
+
+  #image("../output/efficient_frontier.png", width: 100%)
+
   == Half-Life of a Trade
 
   For $kappa T gt.tilde 1$, $sinh(kappa(T-t)) slash sinh(kappa T) approx
