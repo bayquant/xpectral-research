@@ -79,52 +79,84 @@
   and writing $a = overline(eta) slash tau$, $b = lambda sigma^2 tau$ turns
   the objective into the quadratic form
   $ U = a sum_k (x_(k-1) - x_k)^2 + b sum_k x_k^2, $
-  with the endpoints $x_0 = X$ and $x_N = 0$ held fixed and only the
+  with the endpoints $x_0 = X_0$ and $x_N = X_T$ held fixed and only the
   interior holdings $x_1, dots, x_(N-1)$ free.
 
-  *First-order condition.* $U$ is a sum of squares, a convex bowl with a
-  single minimum where every partial derivative vanishes. For an interior
+  *Stationarity condition* (the gradient vanishes, $nabla U = 0$). $U$ is a sum of
+  squares, a convex bowl with a single minimum where every partial
+  derivative vanishes. For an interior
   $x_j$, the only terms containing it are $(x_(j-1) - x_j)^2$,
   $(x_j - x_(j+1))^2$, and $b x_j^2$, so
   $ (partial U)/(partial x_j) = a [-2(x_(j-1) - x_j) + 2(x_j - x_(j+1))]
     + 2 b x_j = 0. $
-  Dividing by 2 and rearranging gives a recurrence linking each holding to
-  its two neighbors:
-  $ x_(j+1) - 2 x_j + x_(j-1) = b/a x_j. $
+  Dividing by 2 and rearranging gives:
+  $ x_(j+1) - 2 x_j + x_(j-1) = b/a x_j
+    = (lambda sigma^2)/overline(eta) tau^2 x_j
+    = tilde(kappa)^2 tau^2 x_j. $
 
-  *Solving the recurrence.* The left-hand side is the centered
-  second-difference stencil, so dividing by $tau^2$ gives
+  *Linear difference equation.* Dividing by $tau^2$ exposes a centered second
+  difference,
   $ (x_(j+1) - 2 x_j + x_(j-1))/tau^2 = tilde(kappa)^2 x_j, quad
-    tilde(kappa)^2 = (lambda sigma^2)/overline(eta), $
-  a discrete analogue of $dot.double(x) = tilde(kappa)^2 x$. It is solved
-  exactly by exponentials $x_j = e^(plus.minus kappa t_j)$, but the second
-  difference of an exponential is not its second derivative, so the decay
-  rate $kappa$ is fixed by
-  $ 2/tau^2 (cosh(kappa tau) - 1) = tilde(kappa)^2 $
-  rather than by $kappa = tilde(kappa)$. Since $2(cosh z - 1) = z^2 +
-  z^4 slash 12 + dots$, $kappa = tilde(kappa) + O(tau^2)$.
+    t_j = j tau. $
+  This is a linear, constant-coefficient, second-order difference equation
+  with values fixed at both ends, $x_0 = X_0$ and $x_N = X_T$. Liquidation
+  sets $X_0 = X$ and $X_T = 0$, but general endpoints cost nothing and also
+  cover re-planning partway through a trade. A second-order equation has a
+  two-dimensional solution space, so the task is to find two independent
+  solutions and fit two constants.
 
-  Imposing $x_0 = X$ and $x_N = 0$ gives the exact holdings trajectory
-  $ x_j = X (sinh(kappa(T - t_j))) / (sinh(kappa T)), quad #link(<eq-holdings-appendix>)[(4)] $ <eq-holdings>
+  *Characteristic equation and roots.* Substituting the trial solution
+  $x_j = e^(theta t_j)$, the shifted terms are $x_(j plus.minus 1) =
+  e^(theta t_j) e^(plus.minus theta tau)$, so the left-hand side becomes
+  $ 1/tau^2 e^(theta t_j) (e^(-theta tau) - 2 + e^(theta tau))
+    = 2/tau^2 (cosh(theta tau) - 1) e^(theta t_j), $
+  using $e^(theta tau) + e^(-theta tau) = 2 cosh(theta tau)$. Cancelling
+  $e^(theta t_j)$ from both sides leaves the characteristic equation
+  $ 2/tau^2 (cosh(theta tau) - 1) = tilde(kappa)^2. $
+  Here $tilde(kappa)$ is the known input and $theta$, the decay rate of the
+  schedule, is the output. They differ because a second difference is not a
+  second derivative: $2(cosh z - 1) = z^2 + z^4 slash 12 + dots$, so
+  $theta = tilde(kappa) + O(tau^2)$. Since $cosh$ is even, the roots come
+  in the pair $plus.minus theta$, giving the two fundamental solutions
+  $e^(theta t_j)$ and $e^(-theta t_j)$.
+
+  *General solution and boundary conditions.* The general solution is any
+  combination of the two fundamental solutions, with two free constants.
+  Since $sinh u = 1/2 (e^u - e^(-u))$, both $sinh(theta(T - t_j))$ and
+  $sinh(theta t_j)$ are such combinations, so it can be written
+  $ x_j = P sinh(theta(T - t_j)) + Q sinh(theta t_j). $
+  This basis is chosen so that each term vanishes at one endpoint:
+  $sinh(theta t_j)$ at $t = 0$ and $sinh(theta(T - t_j))$ at $t = T$.
+  Each boundary condition then fixes one constant on its own. At $t = 0$
+  the $Q$ term drops, so $X_0 = P sinh(theta T)$; at $t = T$ the $P$ term
+  drops, so $X_T = Q sinh(theta T)$. Substituting
+  $P = X_0 slash sinh(theta T)$ and $Q = X_T slash sinh(theta T)$ gives the
+  schedule
+  $ x_j = (X_0 sinh(theta(T - t_j)) + X_T sinh(theta t_j)) / (sinh(theta T)), $
+  a hyperbolic interpolation between the two endpoints. As $theta -> 0$ it
+  reduces to the straight line $x_j = (X_0 (T - t_j) + X_T t_j) slash T$,
+  and larger $theta$ bows the path further from it. Setting $X_0 = X$ and
+  $X_T = 0$ gives the liquidation trajectory
+  $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(4)] $ <eq-holdings>
   for $j = 0, dots, N$, and the associated trade list
-  $ n_j = (2 sinh(1/2 kappa tau)) / (sinh(kappa T))
-    cosh(kappa(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(5)] $ <eq-trades>
+  $ n_j = (2 sinh(1/2 theta tau)) / (sinh(theta T))
+    cosh(theta(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(5)] $ <eq-trades>
   for $j = 1, dots, N$, where $t_(j-1/2) = (j - 1/2) tau$ is the midpoint
   of step $j$.
 
   *Continuous-time limit.* As $tau -> 0$, $overline(eta) -> eta$ and both
-  $kappa$ and $tilde(kappa)$ tend to $sqrt(lambda sigma^2 slash eta)$, so
-  (4) becomes $x(t) = X sinh(kappa(T-t)) slash sinh(kappa T)$, the
+  $theta$ and $tilde(kappa)$ tend to $kappa = sqrt(lambda sigma^2 slash
+  eta)$, so (4) becomes $x(t) = X sinh(kappa(T-t)) slash sinh(kappa T)$, the
   solution of $dot.double(x) = kappa^2 x$, and the trading rate $n_j slash
   tau$ in (5) becomes $-dot(x)(t)$.
 
   == The Shape of the Schedule
 
-  $kappa$ alone governs the curve's shape. As $lambda -> 0$, $kappa -> 0$
+  $theta$ alone governs the curve's shape. As $lambda -> 0$, $theta -> 0$
   and $sinh(z) approx z$ makes the schedule linear: constant-rate,
-  TWAP-like execution. As $lambda$ grows, $kappa$ grows and the curve
+  TWAP-like execution. As $lambda$ grows, $theta$ grows and the curve
   front-loads, trading more impact cost for less timing risk. $1 /
-  kappa$ is the characteristic unwind timescale.
+  theta$ is the characteristic unwind timescale.
 
   #image("../output/optimal_holdings_trajectory.png", width: 100%)
 
@@ -150,11 +182,12 @@
 
   == Half-Life of a Trade
 
-  For $kappa T gt.tilde 1$, $sinh(kappa(T-t)) slash sinh(kappa T) approx
-  e^(-kappa t)$, so holdings decay approximately exponentially,
-  $x(t) approx X e^(-kappa t)$. The time for the position to fall to half
+  For $theta T gt.tilde 1$, $sinh(theta(T-t)) slash sinh(theta T) approx
+  e^(-theta t)$, so holdings decay approximately exponentially,
+  $x(t) approx X e^(-theta t)$. The time for the position to fall to half
   its initial size is the *half-life*
-  $ t_(1\/2) = ln(2) / kappa approx ln(2) sqrt(eta / (lambda sigma^2)). $
+  $ t_(1\/2) = ln(2) / theta approx ln(2) / kappa
+    = ln(2) sqrt(eta / (lambda sigma^2)). $
   Half-life shrinks with risk aversion $lambda$ and volatility $sigma$
   (faster unwinds when risk is costlier) and grows with the
   temporary-impact coefficient $eta$ (slower unwinds when trading is more
@@ -165,7 +198,7 @@
   Since cost enters only through $n_k^2$, the objective is direction-blind:
   accumulating a position just flips the boundary conditions to $x_0 = 0$,
   $x_N = X$, giving the time-reversal of the sell schedule,
-  $ x_j = X (sinh(kappa t_j)) / (sinh(kappa T)). $
+  $ x_j = X (sinh(theta t_j)) / (sinh(theta T)). $
 ]
 
 #bibliography("references.bib", title: "References", style: "ieee")
@@ -214,28 +247,31 @@ Multiplying by $gamma$ gives equation (3).
 
 #link(<eq-holdings>)[Equation (4)]
 
-Substituting $x_j = e^(kappa t_j)$ into the recurrence, with
+Substituting $x_j = e^(theta t_j)$ into the recurrence, with
 $t_(j plus.minus 1) = t_j plus.minus tau$,
-$ (e^(kappa tau) - 2 + e^(-kappa tau))/tau^2 e^(kappa t_j)
-  = 2/tau^2 (cosh(kappa tau) - 1) e^(kappa t_j)
-  = tilde(kappa)^2 e^(kappa t_j), $
-so the exponential is an exact solution whenever $kappa$ satisfies the
-cosh relation, and by symmetry so is $e^(-kappa t_j)$. The general
-solution is $x_j = A e^(kappa t_j) + B e^(-kappa t_j)$. Imposing
-$x_0 = X$ and $x_N = 0$ (with $t_N = T$),
-$ A + B = X, quad A e^(kappa T) + B e^(-kappa T) = 0. $
-Solving for $A, B$ and folding the exponentials into hyperbolic sines
-($sinh z = 1/2 (e^z - e^(-z))$) collapses this to equation (4).
+$ (e^(theta tau) - 2 + e^(-theta tau))/tau^2 e^(theta t_j)
+  = 2/tau^2 (cosh(theta tau) - 1) e^(theta t_j)
+  = tilde(kappa)^2 e^(theta t_j), $
+so the exponential is an exact solution whenever $theta$ satisfies the
+cosh relation, and by symmetry so is $e^(-theta t_j)$. Since
+$sinh z = 1/2 (e^z - e^(-z))$, both $sinh(theta(T - t_j))$ and
+$sinh(theta t_j)$ are constant combinations of $e^(plus.minus theta t_j)$,
+so the general solution can be written
+$ x_j = P sinh(theta(T - t_j)) + Q sinh(theta t_j). $
+At $t = 0$ the $Q$ term vanishes, so $X_0 = P sinh(theta T)$; at
+$t_N = T$ the $P$ term vanishes, so $X_T = Q sinh(theta T)$. Each
+coefficient is read off directly, with no $2 times 2$ system to solve,
+and setting $X_0 = X$, $X_T = 0$ gives equation (4).
 
 == Trade List <eq-trades-appendix>
 
 #link(<eq-trades>)[Equation (5)]
 
 Since $n_j = x_(j-1) - x_j$, equation (4) gives
-$ n_j = X / (sinh(kappa T))
-  [sinh(kappa(T - t_(j-1))) - sinh(kappa(T - t_j))]. $
+$ n_j = X / (sinh(theta T))
+  [sinh(theta(T - t_(j-1))) - sinh(theta(T - t_j))]. $
 The identity $sinh u - sinh v = 2 cosh((u+v) slash 2) sinh((u-v) slash 2)$,
-with $u - v = kappa tau$ and $(u+v) slash 2 = kappa(T - t_(j-1/2))$, gives
+with $u - v = theta tau$ and $(u+v) slash 2 = theta(T - t_(j-1/2))$, gives
 equation (5).
 
 == Notation
@@ -247,6 +283,11 @@ equation (5).
   table.header([*symbol*], [*meaning*], [*units*]),
   [$X$],
   [total shares to be liquidated (or accumulated)],
+  [shares],
+
+  [$X_0$, $X_T$],
+  [holdings at the start and end of a schedule; $X_0 = X$ and $X_T = 0$
+   for a full liquidation],
   [shares],
 
   [$T$],
@@ -343,10 +384,13 @@ equation (5).
   [coefficient of the discrete optimality recurrence],
   [1/day],
 
-  [$kappa$],
-  [decay rate of the optimal schedule, solving $2 tau^(-2) (cosh(kappa
-   tau) - 1) = tilde(kappa)^2$; $kappa -> sqrt(lambda sigma^2 slash eta)$
-   as $tau -> 0$],
+  [$theta$],
+  [decay rate of the optimal schedule, solving $2 tau^(-2) (cosh(theta
+   tau) - 1) = tilde(kappa)^2$; $theta -> kappa$ as $tau -> 0$],
+  [1/day],
+
+  [$kappa = sqrt(lambda sigma^2 slash eta)$],
+  [continuous-time limit of both $theta$ and $tilde(kappa)$],
   [1/day],
 )
 
