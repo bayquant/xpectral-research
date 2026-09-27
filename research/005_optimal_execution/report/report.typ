@@ -30,7 +30,8 @@
 
   The price follows Arithmetic Brownian Motion, disturbed by volatility,
   drift, and the trader's own activity. Discretizing the horizon into $N$
-  steps of length $tau = T slash N$, with $x_k$ shares held after step
+  steps of length $tau = T slash N$, with grid points $t_k = k tau$,
+  $x_k$ shares held after step
   $k$ ($x_0 = X$, $x_N = 0$) and $n_k = x_(k-1) - x_k$ shares traded in
   step $k$, the price process is
   $ S_k = S_(k-1) + #text(fill: red)[$alpha$] tau + sigma sqrt(tau) xi_k - tau g(n_k/tau), quad #link(<eq-price-process-appendix>)[(1)] $ <eq-price-process>
@@ -85,7 +86,7 @@
   (timing risk). $U(x)$ is convex, so its unique minimum is where every
   partial derivative vanishes, which gives the linear recurrence
   $ (x_(j+1) - 2 x_j + x_(j-1))/tau^2 = tilde(kappa)^2 x_j, quad
-    tilde(kappa)^2 = (lambda sigma^2)/overline(eta), quad t_j = j tau, $
+    tilde(kappa)^2 = (lambda sigma^2)/overline(eta), $
   a discrete analogue of $dot.double(x) = tilde(kappa)^2 x$: the optimal
   path curves in proportion to the position still held.
 
@@ -216,8 +217,8 @@ Dividing by $2 overline(eta) slash tau$ and rearranging gives
 $ x_(j+1) - 2 x_j + x_(j-1)
   = (lambda sigma^2)/overline(eta) tau^2 x_j
   = tilde(kappa)^2 tau^2 x_j, $
-a linear, constant-coefficient, second-order difference equation with
-values fixed at both ends. Its solution space is two-dimensional, so the
+a second-order linear homogeneous difference equation with constant
+coefficients and values fixed at both ends. Its solution space is two-dimensional, so the
 task is to find two independent solutions and fit two constants.
 
 *Characteristic equation.* Substituting $x_j = e^(theta t_j)$, with
