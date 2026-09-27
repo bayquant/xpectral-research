@@ -7,7 +7,7 @@
 #show regex("^\[\d+\]"): it => text(fill: rgb("#1a73e8"))[#it]
 
 #align(center)[
-  #text(size: 20pt, weight: "bold")[Optimal Execution]
+  #text(size: 20pt, weight: "bold")[A Primer on Optimal Execution]
 
   #v(0.5em)
   #text(size: 12pt)[BayQuant]
@@ -28,17 +28,25 @@
 
   == Price Dynamics and Impact
 
-  The price follows Arithmetic Brownian Motion, disturbed by volatility,
-  drift, and the trader's own activity. Discretizing the horizon into $N$
-  steps of length $tau = T slash N$, with grid points $t_k = k tau$,
-  $x_k$ shares held after step
-  $k$ ($x_0 = X$, $x_N = 0$) and $n_k = x_(k-1) - x_k$ shares traded in
-  step $k$, the price process is
+  The price follows Arithmetic Brownian Motion (ABM), disturbed by
+  volatility, drift, and the trader's own activity. Discretizing the
+  horizon into $N$ steps of length $tau = T slash N$, with grid points
+  $t_k = k tau$, $x_k$ shares held after step $k$ ($x_0 = X$, $x_N = 0$)
+  and $n_k = x_(k-1) - x_k$ shares traded in step $k$, the price process is
   $ S_k = S_(k-1) + #text(fill: red)[$alpha$] tau + sigma sqrt(tau) xi_k - tau g(n_k/tau), quad #link(<eq-price-process-appendix>)[(1)] $ <eq-price-process>
   where $xi_k$ are i.i.d. shocks with zero mean and unit variance, $g(v)$
   is the *permanent impact* (persists in the price process), and the drift
   #text(fill: red)[$alpha$] is taken as #text(fill: red)[zero] throughout since no directional
   information is assumed.
+
+  ABM is an assumption. Its shocks $sigma sqrt(tau) xi_k$ have a fixed
+  dollar size, whereas under geometric Brownian motion (GBM) they scale
+  with the current price, $sigma S_(k-1) sqrt(tau) xi_k$, so the risk of
+  each step would depend on the path the price takes. Over trading
+  horizons of days, fractional price changes are small and the two are
+  practically indistinguishable @almgren2000, and ABM keeps the variance
+  of the cost a simple quadratic in the holdings.
+
   Trading also incurs a *temporary impact* $h(v)$: a transient
   concession on the execution price of a single step, so the price actually 
   received on sale $k$ is
