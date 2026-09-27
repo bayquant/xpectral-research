@@ -172,6 +172,36 @@
   accumulating a position just flips the boundary conditions to $x_0 = 0$,
   $x_N = X$, giving the time-reversal of the sell schedule,
   $ x_j = X (sinh(theta t_j)) / (sinh(theta T)). $
+
+  == Implementation: Numerical Stability
+
+  Equations (5) to (7) are exact but fail in floating point at both ends
+  of the risk-aversion range. Three rewrites keep them accurate.
+
+  *Decay rate.* Inverting (5) directly gives $theta = tau^(-1)
+  "arccosh"(1 + 1/2 tilde(kappa)^2 tau^2)$, but for small $tilde(kappa)
+  tau$ the argument rounds to 1 and $theta$ collapses to 0 (in double
+  precision already at $tilde(kappa) tau approx 10^(-8)$). Since $cosh z -
+  1 = 2 sinh^2(z slash 2)$, (5) is equivalent to $2 tau^(-1) sinh(1/2 theta
+  tau) = tilde(kappa)$, which inverts without cancellation:
+  $ theta = 2/tau "arcsinh"((tilde(kappa) tau)/2). $
+
+  *Overflow.* $sinh(theta T)$ overflows in double precision once $theta T
+  gt.tilde 710$, and (6) and (7) then evaluate to $infinity slash infinity$.
+  Factoring out the dominant exponential leaves only non-positive
+  exponents,
+  $ x_j = X e^(-theta t_j) (1 - e^(-2 theta(T - t_j))) / (1 - e^(-2 theta T)), $
+  $ n_j = X (2 sinh(1/2 theta tau) e^(-theta t_(j-1/2))
+    (1 + e^(-2 theta(T - t_(j-1/2))))) / (1 - e^(-2 theta T)). $
+  Computing the trades from (7) rather than as $x_(j-1) - x_j$ also avoids
+  cancellation late in an aggressive schedule, when consecutive holdings
+  are nearly equal.
+
+  *Risk-neutral limit.* As $theta -> 0$, each $1 - e^(-u)$ factor above
+  loses its leading digits to cancellation; evaluating it as
+  $-"expm1"(-u)$ keeps full precision for small $u$. At $theta = 0$
+  exactly the expressions are $0 slash 0$, so that case returns the linear
+  schedule $x_j = X (T - t_j) slash T$, $n_j = X slash N$ directly.
 ]
 
 #pagebreak()
