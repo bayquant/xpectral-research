@@ -99,23 +99,29 @@
   The trader therefore sells fastest while the position is large and
   slows down as it shrinks.
 
-  Solving it (see the Appendix, which also treats general endpoints and so
-  covers re-planning partway through a trade) gives the liquidation
+  Solving it gives a decay rate $theta$, the solution of
+  $ 2/tau^2 (cosh(theta tau) - 1) = tilde(kappa)^2, quad #link(<eq-decay-appendix>)[(5)] $ <eq-decay>
+  so $theta = tilde(kappa) + O(tau^2)$, and the optimal liquidation
   trajectory
-  $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(5)] $ <eq-holdings>
-  for $j = 0, dots, N$, and the associated trade list
+  $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(6)] $ <eq-holdings>
+  for $j = 0, dots, N$, with the associated trade list
   $ n_j = (2 sinh(1/2 theta tau)) / (sinh(theta T))
-    cosh(theta(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(6)] $ <eq-trades>
+    cosh(theta(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(7)] $ <eq-trades>
   for $j = 1, dots, N$, where $t_(j-1/2) = (j - 1/2) tau$ is the midpoint
-  of step $j$. The decay rate $theta$ solves
-  $ 2/tau^2 (cosh(theta tau) - 1) = tilde(kappa)^2, $
-  so $theta = tilde(kappa) + O(tau^2)$.
+  of step $j$.
+
+  *Re-planning.* Because the solution holds for any endpoints, the trader
+  can re-plan at any step $m$ by restarting it from the current position
+  $x_m$ over the remaining horizon $T - t_m$. With unchanged parameters
+  this reproduces the original schedule (the plan is time-consistent), so
+  re-planning matters only when fills drift off-plan or estimates of
+  $sigma$, $eta$ or $lambda$ change.
 
   *Continuous-time limit.* As $tau -> 0$, $overline(eta) -> eta$ and both
   $theta$ and $tilde(kappa)$ tend to $kappa = sqrt(lambda sigma^2 slash
-  eta)$, so (5) becomes $x(t) = X sinh(kappa(T-t)) slash sinh(kappa T)$, the
+  eta)$, so (6) becomes $x(t) = X sinh(kappa(T-t)) slash sinh(kappa T)$, the
   solution of $dot.double(x) = kappa^2 x$, and the trading rate $n_j slash
-  tau$ in (6) becomes $-dot(x)(t)$.
+  tau$ in (7) becomes $-dot(x)(t)$.
 
   == The Shape of the Schedule
 
@@ -226,29 +232,34 @@ $ x_(j+1) - 2 x_j + x_(j-1)
   = tilde(kappa)^2 tau^2 x_j, $
 and dividing by $tau^2$ gives equation (4).
 
-== Solving the Optimal-Schedule Recurrence <eq-holdings-appendix>
+== Decay Rate <eq-decay-appendix>
 
-#link(<eq-holdings>)[Equation (5)]
+#link(<eq-decay>)[Equation (5)]
 
 Equation (4) is a second-order linear homogeneous difference equation
 with constant coefficients and values fixed at both ends. Its solution
 space is two-dimensional, so the task is to find two independent
 solutions and fit two constants.
 
-*Characteristic equation.* Substituting $x_j = e^(theta t_j)$, with
+Substituting the trial solution $x_j = e^(theta t_j)$, with
 $t_(j plus.minus 1) = t_j plus.minus tau$,
 $ (e^(theta tau) - 2 + e^(-theta tau))/tau^2 e^(theta t_j)
   = 2/tau^2 (cosh(theta tau) - 1) e^(theta t_j)
   = tilde(kappa)^2 e^(theta t_j). $
 The factor $e^(theta t_j)$ never vanishes, so $e^(theta t_j)$ is an exact
-solution whenever $theta$ satisfies the cosh relation. $theta$ differs
+solution whenever $theta$ satisfies the cosh relation, equation (5).
+$theta$ differs
 from $tilde(kappa)$ because a second difference is not a second
 derivative: $2(cosh z - 1) = z^2 + z^4 slash 12 + dots$, so
 $theta = tilde(kappa) + O(tau^2)$. Because $cosh$ is even, $e^(-theta t_j)$
 is also a solution; the ratio $e^(2 theta t_j)$ of the two is non-constant
 for $theta > 0$, so they are independent and span every solution.
 
-*Boundary conditions.* The general solution is
+== Optimal Liquidation Trajectory <eq-holdings-appendix>
+
+#link(<eq-holdings>)[Equation (6)]
+
+*Boundary conditions.* The general solution of equation (4) is
 $ x_j = A e^(theta t_j) + B e^(-theta t_j), $
 and the two endpoints give a linear system in $A$ and $B$,
 $ A + B = X_0, quad A e^(theta T) + B e^(-theta T) = X_T. $
@@ -273,18 +284,26 @@ a hyperbolic interpolation between the endpoints: the first term carries
 $X_0$ and vanishes at $t = T$, the second carries $X_T$ and vanishes at
 $t = 0$. As $theta -> 0$ it reduces to the straight line
 $x_j = (X_0 (T - t_j) + X_T t_j) slash T$, and larger $theta$ bows the path
-further from it. Setting $X_0 = X$, $X_T = 0$ gives equation (5).
+further from it. Setting $X_0 = X$, $X_T = 0$ gives equation (6).
+
+*Time consistency.* Re-planning at step $m$ from the current position
+$x_m$, with $X_T = 0$ over the remaining horizon $T - t_m$, gives
+$ x_j = x_m (sinh(theta(T - t_j))) / (sinh(theta(T - t_m))),
+  quad j = m, dots, N. $
+If $x_m$ is on schedule, $x_m = X sinh(theta(T - t_m)) slash
+sinh(theta T)$ by equation (6), the factor $sinh(theta(T - t_m))$ cancels
+and the re-planned path is exactly the remainder of equation (6).
 
 == Trade List <eq-trades-appendix>
 
-#link(<eq-trades>)[Equation (6)]
+#link(<eq-trades>)[Equation (7)]
 
-Since $n_j = x_(j-1) - x_j$, equation (5) gives
+Since $n_j = x_(j-1) - x_j$, equation (6) gives
 $ n_j = X / (sinh(theta T))
   [sinh(theta(T - t_(j-1))) - sinh(theta(T - t_j))]. $
 The identity $sinh u - sinh v = 2 cosh((u+v) slash 2) sinh((u-v) slash 2)$,
 with $u - v = theta tau$ and $(u+v) slash 2 = theta(T - t_(j-1/2))$, gives
-equation (6).
+equation (7).
 
 == Notation
 
