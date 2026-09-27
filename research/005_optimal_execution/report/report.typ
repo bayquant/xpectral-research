@@ -110,33 +110,35 @@
   e^(theta t_j) e^(plus.minus theta tau)$, so the left-hand side becomes
   $ 1/tau^2 e^(theta t_j) (e^(-theta tau) - 2 + e^(theta tau))
     = 2/tau^2 (cosh(theta tau) - 1) e^(theta t_j), $
-  using $e^(theta tau) + e^(-theta tau) = 2 cosh(theta tau)$. Cancelling
-  $e^(theta t_j)$ from both sides leaves the characteristic equation
+  using $e^(theta tau) + e^(-theta tau) = 2 cosh(theta tau)$. The factor
+  $e^(theta t_j)$ is never zero, so it cancels, and the recurrence holds for
+  every $j$ exactly when
   $ 2/tau^2 (cosh(theta tau) - 1) = tilde(kappa)^2. $
-  Here $tilde(kappa)$ is the known input and $theta$, the decay rate of the
-  schedule, is the output. They differ because a second difference is not a
-  second derivative: $2(cosh z - 1) = z^2 + z^4 slash 12 + dots$, so
-  $theta = tilde(kappa) + O(tau^2)$. Since $cosh$ is even, the roots come
-  in the pair $plus.minus theta$, giving the two fundamental solutions
-  $e^(theta t_j)$ and $e^(-theta t_j)$.
+  This *characteristic equation* fixes the rate $theta$ from the input
+  $tilde(kappa)$: the known $tilde(kappa)$ on the right, the unknown $theta$
+  inside the $cosh$ on the left. The two differ because a second difference
+  is not a second derivative: $2(cosh z - 1) = z^2 + z^4 slash 12 + dots$,
+  so $theta = tilde(kappa) + O(tau^2)$. Because $cosh$ is even, $-theta$
+  solves it whenever $theta$ does, so the recurrence has the two solutions
+  $e^(theta t_j)$ and $e^(-theta t_j)$; their ratio $e^(2 theta t_j)$ is
+  non-constant for $theta > 0$, so they are linearly independent, and since
+  a second-order equation has a two-dimensional solution space they span
+  every solution.
 
-  *General solution and boundary conditions.* The general solution is any
-  combination of the two fundamental solutions, with two free constants.
-  Since $sinh u = 1/2 (e^u - e^(-u))$, both $sinh(theta(T - t_j))$ and
-  $sinh(theta t_j)$ are such combinations, so it can be written
-  $ x_j = P sinh(theta(T - t_j)) + Q sinh(theta t_j). $
-  This basis is chosen so that each term vanishes at one endpoint:
-  $sinh(theta t_j)$ at $t = 0$ and $sinh(theta(T - t_j))$ at $t = T$.
-  Each boundary condition then fixes one constant on its own. At $t = 0$
-  the $Q$ term drops, so $X_0 = P sinh(theta T)$; at $t = T$ the $P$ term
-  drops, so $X_T = Q sinh(theta T)$. Substituting
-  $P = X_0 slash sinh(theta T)$ and $Q = X_T slash sinh(theta T)$ gives the
-  schedule
+  *General solution and boundary conditions.* Every solution is therefore a
+  combination of the two, with two free constants,
+  $ x_j = A e^(theta t_j) + B e^(-theta t_j). $
+  The endpoints pin $A$ and $B$: at $t_0 = 0$, $x_0 = A + B = X_0$, and at
+  $t_N = T$, $x_N = A e^(theta T) + B e^(-theta T) = X_T$. Solving this pair
+  and reassembling collapses the exponentials into hyperbolic sines (the
+  algebra is in the Appendix),
   $ x_j = (X_0 sinh(theta(T - t_j)) + X_T sinh(theta t_j)) / (sinh(theta T)), $
-  a hyperbolic interpolation between the two endpoints. As $theta -> 0$ it
-  reduces to the straight line $x_j = (X_0 (T - t_j) + X_T t_j) slash T$,
-  and larger $theta$ bows the path further from it. Setting $X_0 = X$ and
-  $X_T = 0$ gives the liquidation trajectory
+  a hyperbolic interpolation between the two endpoints: the first term
+  carries the start value $X_0$ and vanishes at $t = T$, the second carries
+  $X_T$ and vanishes at $t = 0$, and $sinh(theta T)$ normalizes both. As
+  $theta -> 0$ it reduces to the straight line $x_j = (X_0 (T - t_j) + X_T
+  t_j) slash T$, and larger $theta$ bows the path further from it. Setting
+  $X_0 = X$ and $X_T = 0$ gives the liquidation trajectory
   $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(4)] $ <eq-holdings>
   for $j = 0, dots, N$, and the associated trade list
   $ n_j = (2 sinh(1/2 theta tau)) / (sinh(theta T))
@@ -252,16 +254,29 @@ $t_(j plus.minus 1) = t_j plus.minus tau$,
 $ (e^(theta tau) - 2 + e^(-theta tau))/tau^2 e^(theta t_j)
   = 2/tau^2 (cosh(theta tau) - 1) e^(theta t_j)
   = tilde(kappa)^2 e^(theta t_j), $
-so the exponential is an exact solution whenever $theta$ satisfies the
-cosh relation, and by symmetry so is $e^(-theta t_j)$. Since
-$sinh z = 1/2 (e^z - e^(-z))$, both $sinh(theta(T - t_j))$ and
-$sinh(theta t_j)$ are constant combinations of $e^(plus.minus theta t_j)$,
-so the general solution can be written
-$ x_j = P sinh(theta(T - t_j)) + Q sinh(theta t_j). $
-At $t = 0$ the $Q$ term vanishes, so $X_0 = P sinh(theta T)$; at
-$t_N = T$ the $P$ term vanishes, so $X_T = Q sinh(theta T)$. Each
-coefficient is read off directly, with no $2 times 2$ system to solve,
-and setting $X_0 = X$, $X_T = 0$ gives equation (4).
+so $e^(theta t_j)$ is an exact solution whenever $theta$ satisfies the
+cosh relation, and by evenness so is $e^(-theta t_j)$. The general
+solution is their combination
+$ x_j = A e^(theta t_j) + B e^(-theta t_j), $
+and the two endpoints give a linear system in $A$ and $B$,
+$ A + B = X_0, quad A e^(theta T) + B e^(-theta T) = X_T. $
+From the first equation $B = X_0 - A$; substituting into the second and
+using $e^(theta T) - e^(-theta T) = 2 sinh(theta T)$,
+$ A = (X_T - X_0 e^(-theta T)) / (2 sinh(theta T)), quad
+  B = (X_0 e^(theta T) - X_T) / (2 sinh(theta T)). $
+Reassembling $x_j = A e^(theta t_j) + B e^(-theta t_j)$ and grouping the
+two coefficients,
+$ 2 sinh(theta T) thin x_j
+  &= X_T (e^(theta t_j) - e^(-theta t_j))
+   + X_0 (e^(theta T) e^(-theta t_j) - e^(-theta T) e^(theta t_j)) \
+  &= X_T (e^(theta t_j) - e^(-theta t_j))
+   + X_0 (e^(theta(T - t_j)) - e^(-theta(T - t_j))) \
+  &= 2 X_T sinh(theta t_j) + 2 X_0 sinh(theta(T - t_j)), $
+where the second line used $e^(theta T) e^(-theta t_j) = e^(theta(T - t_j))$
+and $e^(-theta T) e^(theta t_j) = e^(-theta(T - t_j))$. Each $sinh$ emerges
+on its own from a pair of exponentials of opposite sign, so no basis has to
+be guessed in advance. Dividing by $2 sinh(theta T)$ gives the hyperbolic
+interpolation; setting $X_0 = X$, $X_T = 0$ gives equation (4).
 
 == Trade List <eq-trades-appendix>
 
