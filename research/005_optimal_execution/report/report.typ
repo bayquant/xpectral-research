@@ -86,17 +86,26 @@
   (timing risk). $U(x)$ is convex, so its unique minimum is where every
   partial derivative vanishes, which gives the linear recurrence
   $ (x_(j+1) - 2 x_j + x_(j-1))/tau^2 = tilde(kappa)^2 x_j, quad
-    tilde(kappa)^2 = (lambda sigma^2)/overline(eta), $
-  a discrete analogue of $dot.double(x) = tilde(kappa)^2 x$: the optimal
-  path curves in proportion to the position still held.
+    tilde(kappa)^2 = (lambda sigma^2)/overline(eta), quad #link(<eq-recurrence-appendix>)[(4)] $ <eq-recurrence>
+  a discrete analogue of $dot.double(x)(t) = tilde(kappa)^2 x(t)$, where:
+  - $x(t)$ is the position still held at time $t$;
+  - $dot.double(x)(t)$ is how fast the trading rate $-dot(x)(t)$ slows:
+    zero for a constant-rate schedule, positive when the trader is
+    slowing down;
+  - $tilde(kappa)^2$ is the price of risk relative to the price of impact.
+  Multiplying by $overline(eta)$ gives $overline(eta) dot.double(x)(t) =
+  lambda sigma^2 x(t)$: at every moment, the change in the marginal impact
+  cost of trading balances the marginal risk cost of holding $x(t)$ shares.
+  The trader therefore sells fastest while the position is large and
+  slows down as it shrinks.
 
   Solving it (see the Appendix, which also treats general endpoints and so
   covers re-planning partway through a trade) gives the liquidation
   trajectory
-  $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(4)] $ <eq-holdings>
+  $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(5)] $ <eq-holdings>
   for $j = 0, dots, N$, and the associated trade list
   $ n_j = (2 sinh(1/2 theta tau)) / (sinh(theta T))
-    cosh(theta(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(5)] $ <eq-trades>
+    cosh(theta(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(6)] $ <eq-trades>
   for $j = 1, dots, N$, where $t_(j-1/2) = (j - 1/2) tau$ is the midpoint
   of step $j$. The decay rate $theta$ solves
   $ 2/tau^2 (cosh(theta tau) - 1) = tilde(kappa)^2, $
@@ -104,9 +113,9 @@
 
   *Continuous-time limit.* As $tau -> 0$, $overline(eta) -> eta$ and both
   $theta$ and $tilde(kappa)$ tend to $kappa = sqrt(lambda sigma^2 slash
-  eta)$, so (4) becomes $x(t) = X sinh(kappa(T-t)) slash sinh(kappa T)$, the
+  eta)$, so (5) becomes $x(t) = X sinh(kappa(T-t)) slash sinh(kappa T)$, the
   solution of $dot.double(x) = kappa^2 x$, and the trading rate $n_j slash
-  tau$ in (5) becomes $-dot(x)(t)$.
+  tau$ in (6) becomes $-dot(x)(t)$.
 
   == The Shape of the Schedule
 
@@ -159,8 +168,6 @@
   $ x_j = X (sinh(theta t_j)) / (sinh(theta T)). $
 ]
 
-#bibliography("references.bib", title: "References", style: "ieee")
-
 #pagebreak()
 
 = Appendix
@@ -201,11 +208,11 @@ Subtracting the second identity from the first and dividing by 2,
 $ sum_k n_k x_k = 1/2 X^2 - 1/2 sum_k n_k^2. $
 Multiplying by $gamma$ gives equation (3).
 
-== Solving the Optimal-Schedule Recurrence <eq-holdings-appendix>
+== Optimal-Schedule Recurrence <eq-recurrence-appendix>
 
-#link(<eq-holdings>)[Equation (4)]
+#link(<eq-recurrence>)[Equation (4)]
 
-*Stationarity condition.* Take general endpoints $x_0 = X_0$ and
+Take general endpoints $x_0 = X_0$ and
 $x_N = X_T$. $U(x)$ is a sum of squares, a convex bowl with a single minimum
 where every partial derivative vanishes. For an interior $x_j$, the only
 terms containing it are $(x_(j-1) - x_j)^2$, $(x_j - x_(j+1))^2$, and
@@ -217,9 +224,16 @@ Dividing by $2 overline(eta) slash tau$ and rearranging gives
 $ x_(j+1) - 2 x_j + x_(j-1)
   = (lambda sigma^2)/overline(eta) tau^2 x_j
   = tilde(kappa)^2 tau^2 x_j, $
-a second-order linear homogeneous difference equation with constant
-coefficients and values fixed at both ends. Its solution space is two-dimensional, so the
-task is to find two independent solutions and fit two constants.
+and dividing by $tau^2$ gives equation (4).
+
+== Solving the Optimal-Schedule Recurrence <eq-holdings-appendix>
+
+#link(<eq-holdings>)[Equation (5)]
+
+Equation (4) is a second-order linear homogeneous difference equation
+with constant coefficients and values fixed at both ends. Its solution
+space is two-dimensional, so the task is to find two independent
+solutions and fit two constants.
 
 *Characteristic equation.* Substituting $x_j = e^(theta t_j)$, with
 $t_(j plus.minus 1) = t_j plus.minus tau$,
@@ -259,18 +273,18 @@ a hyperbolic interpolation between the endpoints: the first term carries
 $X_0$ and vanishes at $t = T$, the second carries $X_T$ and vanishes at
 $t = 0$. As $theta -> 0$ it reduces to the straight line
 $x_j = (X_0 (T - t_j) + X_T t_j) slash T$, and larger $theta$ bows the path
-further from it. Setting $X_0 = X$, $X_T = 0$ gives equation (4).
+further from it. Setting $X_0 = X$, $X_T = 0$ gives equation (5).
 
 == Trade List <eq-trades-appendix>
 
-#link(<eq-trades>)[Equation (5)]
+#link(<eq-trades>)[Equation (6)]
 
-Since $n_j = x_(j-1) - x_j$, equation (4) gives
+Since $n_j = x_(j-1) - x_j$, equation (5) gives
 $ n_j = X / (sinh(theta T))
   [sinh(theta(T - t_(j-1))) - sinh(theta(T - t_j))]. $
 The identity $sinh u - sinh v = 2 cosh((u+v) slash 2) sinh((u-v) slash 2)$,
 with $u - v = theta tau$ and $(u+v) slash 2 = theta(T - t_(j-1/2))$, gives
-equation (5).
+equation (6).
 
 == Notation
 
@@ -396,3 +410,5 @@ $gamma$ and $eta$ each carry an extra factor of $1 slash "share"$ beyond
 what "a price shift per share traded" suggests, because *price* is itself
 quoted in \$/share: a shift in that per-share price, per share traded, is
 (\$/share)/share = \$/share².
+
+#bibliography("references.bib", title: "References", style: "ieee")
