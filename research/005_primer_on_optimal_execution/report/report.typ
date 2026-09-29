@@ -31,27 +31,30 @@
   == Price Dynamics and Impact
 
   The price follows Arithmetic Brownian Motion (ABM), disturbed by
-  volatility, drift, and the trader's own activity. Discretizing the
+  volatility and drift (exogenous) and by the trader's own activity
+  (endogenous). Discretizing the
   horizon into $N$ steps of length $tau = T slash N$, with grid points
   $t_k = k tau$, $x_k$ shares held after step $k$ ($x_0 = X$, $x_N = 0$)
   and $n_k = x_(k-1) - x_k$ shares traded in step $k$, the price process is
   $ S_k = S_(k-1) + #text(fill: red)[$alpha$] tau + sigma sqrt(tau) xi_k - tau g(n_k/tau), quad #link(<eq-price-process-appendix>)[(1)] $ <eq-price-process>
-  where $xi_k$ are i.i.d. shocks with zero mean and unit variance, $g(v)$
+  where $xi_k$ are i.i.d. shocks with zero mean and unit variance,
+  independent of the trading, $g(v)$
   is the *permanent impact* (persists in the price process), and the drift
   #text(fill: red)[$alpha$] is taken as #text(fill: red)[zero] throughout since no directional
   information is assumed.
 
   ABM is an assumption. Its shocks $sigma sqrt(tau) xi_k$ have a fixed
-  dollar size, whereas under geometric Brownian motion (GBM) they scale
-  with the current price, $sigma S_(k-1) sqrt(tau) xi_k$, so the risk of
-  each step would depend on the path the price takes. Over trading
-  horizons of days, fractional price changes are small and the two are
-  practically indistinguishable @almgren2000, and ABM keeps the variance
-  of the cost a simple quadratic in the holdings.
+  dollar size; under geometric Brownian motion (GBM) they would instead
+  scale with the current price, $sigma S_(k-1) sqrt(tau) xi_k$, making
+  the risk of each step depend on the path the price has taken. Over
+  trading horizons of days, however, fractional price changes are small,
+  so the two are practically indistinguishable @almgren2000. Moreover, ABM
+  is far more tractable: it keeps the variance of the cost a simple
+  quadratic in the holdings.
 
   Trading also incurs a *temporary impact* $h(v)$: a transient
   concession on the execution price of a single step, so the price actually 
-  received on sale $k$ is
+  received in step $k$ is
   $ tilde(S)_k = S_(k-1) - h(n_k/tau). $
   In both $g$ and $h$, the argument $v = n_k slash tau$ is the average rate
   of trading during the interval $t_(k-1)$ to $t_k$.
@@ -401,7 +404,7 @@ equation (7).
   [\$/share],
 
   [$tilde(S)_k$],
-  [actual price per share received on sale $k$],
+  [actual price per share received in step $k$],
   [\$/share],
 
   [$h(v)$],
