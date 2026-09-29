@@ -22,9 +22,11 @@
   against the order. Sell it all at once and *market impact* is
   concentrated into a short, severe shock. Spread it out and impact
   cost falls, but the remaining shares sit exposed to the market's
-  random swings for longer: *timing risk*. This report replicates
-  Almgren and Chriss @almgren2000, who cast optimal liquidation as
-  minimizing expected cost plus a constant times its variance.
+  random swings for longer: *timing risk*. This primer works through the
+  model of Almgren and Chriss @almgren2000, who cast optimal liquidation
+  as a mean-variance problem, minimizing a *risk-adjusted cost*: expected
+  cost plus risk aversion times its variance. It derives the optimal
+  schedule and replicates their efficient frontier.
 
   == Price Dynamics and Impact
 
