@@ -62,12 +62,15 @@
   == Cost of Trading
 
   Following Perold (1988) #cite(<perold1988>), the *implementation shortfall*
-  #box[$X S_0 - sum_k n_k tilde(S)_k$ #link(<eq-capture>)[(2)]] <eq-capture-main> is the
+  $X S_0 - sum_k n_k tilde(S)_k$ is the
   cost of trading relative to the initial book value. Expanding the
   capture term $sum_k n_k tilde(S)_k$ (total trading revenue) gives the
   shortfall's expectation and variance
-  $ E(x) = sum_k tau x_k g(n_k/tau) + sum_k n_k h(n_k/tau), $
-  $ V(x) = sigma^2 sum_k tau x_k^2. $
+  #align(center, grid(columns: 2, align: horizon, column-gutter: 1em,
+    [$ E(x) &= sum_k tau x_k g(n_k/tau) + sum_k n_k h(n_k/tau), \
+      V(x) &= sigma^2 sum_k tau x_k^2. $ <eq-capture-main>],
+    link(<eq-capture>)[(2)],
+  ))
   Specializing to linear impact, $g(v) = gamma v$ and $h(v) = epsilon
   "sgn"(v) + eta v$ (with $epsilon$ a fixed cost per trade, e.g. half the
   bid-ask spread), summation by parts gives the permanent-impact term
@@ -89,46 +92,39 @@
 
   == The Optimal Schedule
 
-  Up to the schedule-independent constant $1/2 gamma X^2 + epsilon X$,
-  the objective is the quadratic form
+  The terms $1/2 gamma X^2 + epsilon X$ are the same for every schedule,
+  so they do not change the optimal schedule and can be dropped.
+  What remains is a quadratic in the holdings,
   $ U(x) = overline(eta)/tau sum_k (x_(k-1) - x_k)^2
     + lambda sigma^2 tau sum_k x_k^2, $
   with the endpoints $x_0 = X$ and $x_N = 0$ held fixed and only the
   interior holdings $x_1, dots, x_(N-1)$ free. The first sum penalizes
   trading fast (impact cost), the second penalizes holding inventory
   (timing risk). $U(x)$ is convex, so its unique minimum is where every
-  partial derivative vanishes, which gives the linear recurrence
+  partial derivative vanishes, which gives the second-order linear recurrence
   $ (x_(j+1) - 2 x_j + x_(j-1))/tau^2 = tilde(kappa)^2 x_j, quad
     tilde(kappa)^2 = (lambda sigma^2)/overline(eta), quad #link(<eq-recurrence-appendix>)[(4)] $ <eq-recurrence>
   a discrete analogue of $dot.double(x)(t) = tilde(kappa)^2 x(t)$, where:
   - $x(t)$ is the position still held at time $t$;
-  - $dot.double(x)(t)$ is how fast the trading rate $-dot(x)(t)$ slows:
-    zero for a constant-rate schedule, positive when the trader is
-    slowing down;
+  - $dot.double(x)(t)$ measures how the pace of trading $abs(dot(x)(t))$
+    changes: zero at a constant pace, positive when a seller slows down;
   - $tilde(kappa)^2$ is the price of risk relative to the price of impact.
   Multiplying by $overline(eta)$ gives $overline(eta) dot.double(x)(t) =
   lambda sigma^2 x(t)$: at every moment, the change in the marginal impact
   cost of trading balances the marginal risk cost of holding $x(t)$ shares.
   The trader therefore sells fastest while the position is large and
-  slows down as it shrinks.
+  slows down as it shrinks, so the holdings path is convex, bowing below
+  the straight line of constant-rate trading.
 
   Solving it gives a decay rate $theta$, the solution of
   $ 2/tau^2 (cosh(theta tau) - 1) = tilde(kappa)^2, quad #link(<eq-decay-appendix>)[(5)] $ <eq-decay>
-  so $theta = tilde(kappa) + O(tau^2)$, and the optimal liquidation
-  trajectory
+  and the optimal liquidation trajectory
   $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(6)] $ <eq-holdings>
   for $j = 0, dots, N$, with the associated trade list
   $ n_j = (2 sinh(1/2 theta tau)) / (sinh(theta T))
     cosh(theta(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(7)] $ <eq-trades>
   for $j = 1, dots, N$, where $t_(j-1/2) = (j - 1/2) tau$ is the midpoint
   of step $j$.
-
-  *Re-planning.* Because the solution holds for any endpoints, the trader
-  can re-plan at any step $m$ by restarting it from the current position
-  $x_m$ over the remaining horizon $T - t_m$. With unchanged parameters
-  this reproduces the original schedule (the plan is time-consistent), so
-  re-planning matters only when fills drift off-plan or estimates of
-  $sigma$, $eta$ or $lambda$ change.
 
   *Continuous-time limit.* As $tau -> 0$, $overline(eta) -> eta$ and both
   $theta$ and $tilde(kappa)$ tend to $kappa = sqrt(lambda sigma^2 slash
@@ -236,11 +232,37 @@ $ S_k = S_(k-1) + alpha tau + sigma sqrt(tau) xi_k - tau g(n_k/tau),
 
 #link(<eq-capture-main>)[Equation (2)]
 
-Substituting the price dynamics and temporary-impact price into the
-definition of capture (total trading revenue), $sum_k n_k tilde(S)_k$, and
-expanding gives equation (2):
-$ sum_(k=0)^N n_k tilde(S)_k = X S_0 + sum_(k=1)^N (sigma sqrt(tau) xi_k -
+*Temporary impact.* The capture (total trading revenue) is
+$sum_k n_k tilde(S)_k$. Substituting the execution price
+$tilde(S)_k = S_(k-1) - h(n_k/tau)$ splits it into trading at the
+prevailing price minus the temporary-impact concession,
+$ sum_(k=1)^N n_k tilde(S)_k
+  = sum_(k=1)^N n_k S_(k-1) - sum_(k=1)^N n_k h(n_k/tau). $
+
+*Summation by parts.* Writing $n_k = x_(k-1) - x_k$ in the first sum and
+shifting the index of its first half by one,
+$ sum_(k=1)^N n_k S_(k-1)
+  &= sum_(k=0)^(N-1) x_k S_k - sum_(k=1)^N x_k S_(k-1) \
+  &= x_0 S_0 + sum_(k=1)^N x_k (S_k - S_(k-1)), $
+where the second line pairs the terms with the same $x_k$ and uses
+$x_N = 0$ to extend the first sum to $k = N$. With $x_0 = X$, the revenue
+is the initial book value $X S_0$ plus the price change of each step
+earned on the shares still held.
+
+*Price dynamics.* By equation (1) with zero drift, each price change is
+$S_k - S_(k-1) = sigma sqrt(tau) xi_k - tau g(n_k/tau)$. Substituting it
+gives the capture identity
+$ sum_(k=1)^N n_k tilde(S)_k = X S_0 + sum_(k=1)^N (sigma sqrt(tau) xi_k -
   tau g(n_k/tau)) x_k - sum_(k=1)^N n_k h(n_k/tau). $
+
+*Expectation and variance.* The implementation shortfall is therefore
+$ X S_0 - sum_(k=1)^N n_k tilde(S)_k
+  = - sum_(k=1)^N sigma sqrt(tau) xi_k x_k
+  + sum_(k=1)^N tau x_k g(n_k/tau) + sum_(k=1)^N n_k h(n_k/tau). $
+Only the first sum is random. The $xi_k$ have zero mean, so it drops out
+of the expectation, giving $E(x)$; the last two sums are fixed by the
+schedule, and the $xi_k$ are independent with unit variance, so the
+variance is $V(x) = sigma^2 sum_k tau x_k^2$.
 
 == Permanent-Impact Summation by Parts <eq-perm-impact-appendix>
 
