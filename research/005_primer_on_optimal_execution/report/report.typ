@@ -128,17 +128,22 @@
 
   *Continuous-time limit.* As $tau -> 0$, $overline(eta) -> eta$ and both
   $theta$ and $tilde(kappa)$ tend to $kappa = sqrt(lambda sigma^2 slash
-  eta)$, so (6) becomes $x(t) = X sinh(kappa(T-t)) slash sinh(kappa T)$, the
-  solution of $dot.double(x) = kappa^2 x$, and the trading rate $n_j slash
-  tau$ in (7) becomes $-dot(x)(t)$.
+  eta)$. The trajectory (6) becomes
+  $ x(t) = X (sinh(kappa(T - t))) / (sinh(kappa T)), $
+  the solution of $dot.double(x)(t) = kappa^2 x(t)$, and the trading rate
+  $n_j slash tau$ from (7) becomes
+  $ -dot(x)(t) = X kappa (cosh(kappa(T - t))) / (sinh(kappa T)). $
+  The minus sign makes a sale's rate positive, matching $n_k = x_(k-1) -
+  x_k$; a purchase has negative $n_k$ and rate, and every equation holds
+  unchanged.
 
   == The Shape of the Schedule
 
   $theta$ alone governs the curve's shape. As $lambda -> 0$, $theta -> 0$
   and $sinh(z) approx z$ makes the schedule linear: constant-rate,
   TWAP-like execution. As $lambda$ grows, $theta$ grows and the curve
-  front-loads, trading more impact cost for less timing risk. $1 /
-  theta$ is the characteristic unwind timescale.
+  front-loads, accepting more impact cost in return for less timing
+  risk.
 
   #image("../output/optimal_holdings_trajectory.png", width: 100%)
 
@@ -157,8 +162,9 @@
   parameters ($X = 10^6$ shares, $T = 5$ days, $N = 5$). Past the
   risk-neutral point B, $lambda < 0$ (dashed) describes a risk-seeking
   trader who delays selling and pays more in both cost and variance, so
-  that branch is not efficient. The straight line is tangent at $lambda =
-  10^(-6)$ with slope $-lambda$.
+  that branch is not efficient. At each point, the slope of the frontier
+  is $-lambda$; the straight line shows this tangent at $lambda =
+  10^(-6)$.
 
   #image("../output/efficient_frontier.png", width: 100%)
 
@@ -166,7 +172,9 @@
 
   For $theta T gt.tilde 1$, $sinh(theta(T-t)) slash sinh(theta T) approx
   e^(-theta t)$, so holdings decay approximately exponentially,
-  $x(t) approx X e^(-theta t)$. The time for the position to fall to half
+  $x(t) approx X e^(-theta t)$, and $1 slash theta$ is the timescale of
+  the unwind: after a time $1 slash theta$, about $e^(-1) approx 37%$ of
+  the position remains. The time for the position to fall to half
   its initial size is the *half-life*
   $ t_(1\/2) = ln(2) / theta approx ln(2) / kappa
     = ln(2) sqrt(eta / (lambda sigma^2)). $
