@@ -34,9 +34,12 @@
   volatility and drift (exogenous) and by the trader's own activity
   (endogenous). Discretizing the
   horizon into $N$ steps of length $tau = T slash N$, with grid points
-  $t_k = k tau$, $x_k$ shares held after step $k$ ($x_0 = X$, $x_N = 0$)
-  and $n_k = x_(k-1) - x_k$ shares traded in step $k$, the price process is
-  $ S_k = S_(k-1) + #text(fill: red)[$alpha$] tau + sigma sqrt(tau) xi_k - tau g(n_k/tau), quad #link(<eq-price-process-appendix>)[(1)] $ <eq-price-process>
+  $t_k = k tau$, $x_k$ the signed position still to trade after step $k$
+  ($x_0 = X$, $x_N = 0$, with $X > 0$ for a sale and $X < 0$ for a
+  purchase; for a liquidation, $x_k$ is simply the shares still held) and
+  $n_k = x_k - x_(k-1)$ the shares traded in step $k$ (positive when
+  buying, negative when selling), the price process is
+  $ S_k = S_(k-1) + #text(fill: red)[$alpha$] tau + sigma sqrt(tau) xi_k + tau g(n_k/tau), quad #link(<eq-price-process-appendix>)[(1)] $ <eq-price-process>
   where $xi_k$ are i.i.d. shocks with zero mean and unit variance,
   independent of the trading, $g(v)$
   is the *permanent impact* (persists in the price process), and the drift
@@ -53,28 +56,28 @@
   quadratic in the holdings.
 
   Trading also incurs a *temporary impact* $h(v)$: a transient
-  concession on the execution price of a single step, so the price actually 
-  received in step $k$ is
-  $ tilde(S)_k = S_(k-1) - h(n_k/tau). $
+  concession on the execution price of a single step, so the price actually
+  paid (or received, when selling) in step $k$ is
+  $ tilde(S)_k = S_(k-1) + h(n_k/tau). $
   In both $g$ and $h$, the argument $v = n_k slash tau$ is the average rate
   of trading during the interval $t_(k-1)$ to $t_k$.
 
   == Cost of Trading
 
   Following Perold (1988) #cite(<perold1988>), the *implementation shortfall*
-  $X S_0 - sum_k n_k tilde(S)_k$ is the
-  cost of trading relative to the initial book value. Expanding the
-  capture term $sum_k n_k tilde(S)_k$ (total trading revenue) gives the
+  $sum_k n_k (tilde(S)_k - S_0)$ is the cost of trading relative to the
+  arrival price $S_0$: what the trades actually paid, net of what they
+  received, minus what they would have at $S_0$. Expanding it gives the
   shortfall's expectation and variance
   #align(center, grid(columns: 2, align: horizon, column-gutter: 1em,
-    [$ E(x) &= sum_k tau x_k g(n_k/tau) + sum_k n_k h(n_k/tau), \
+    [$ E(x) &= - sum_k tau x_k g(n_k/tau) + sum_k n_k h(n_k/tau), \
       V(x) &= sigma^2 sum_k tau x_k^2. $ <eq-capture-main>],
     link(<eq-capture>)[(2)],
   ))
   Specializing to linear impact, $g(v) = gamma v$ and $h(v) = epsilon
   "sgn"(v) + eta v$ (with $epsilon$ a fixed cost per trade, e.g. half the
   bid-ask spread), summation by parts gives the permanent-impact term
-  $ sum_k tau x_k g(n_k/tau)
+  $ - sum_k tau x_k g(n_k/tau)
     = 1/2 gamma X^2 - 1/2 gamma sum_k n_k^2, quad #link(<eq-perm-impact-appendix>)[(3)] $ <eq-perm-impact>
   so its contribution to $E(x)$ is *not* schedule-independent at finite
   $tau$. Temporary impact contributes
@@ -84,7 +87,7 @@
   schedule-dependent permanent-impact term,
   $ E(x) = 1/2 gamma X^2 + epsilon sum_k abs(n_k)
     + overline(eta)/tau sum_k n_k^2. $
-  For a monotone schedule ($n_k$ all one sign), $sum_k abs(n_k) = X$ (a
+  For a monotone schedule ($n_k$ all one sign), $sum_k abs(n_k) = abs(X)$ (a
   telescoping sum), so only the last term shapes the schedule. Almgren and Chriss minimize the
   utility function
   $ U(x) = E(x) + lambda V(x) $
@@ -92,36 +95,36 @@
 
   == The Optimal Schedule
 
-  The terms $1/2 gamma X^2 + epsilon X$ are the same for every schedule,
+  The terms $1/2 gamma X^2 + epsilon abs(X)$ are the same for every schedule,
   so they do not change the optimal schedule and can be dropped.
-  What remains is a quadratic in the holdings,
-  $ U(x) = overline(eta)/tau sum_k (x_(k-1) - x_k)^2
+  What remains is a quadratic in the position still to trade,
+  $ U(x) = overline(eta)/tau sum_k (x_k - x_(k-1))^2
     + lambda sigma^2 tau sum_k x_k^2, $
   with the endpoints $x_0 = X$ and $x_N = 0$ held fixed and only the
-  interior holdings $x_1, dots, x_(N-1)$ free. The first sum penalizes
+  interior positions $x_1, dots, x_(N-1)$ free. The first sum penalizes
   trading fast (impact cost), the second penalizes holding inventory
   (timing risk). $U(x)$ is convex, so its unique minimum is where every
   partial derivative vanishes, which gives the second-order linear recurrence
   $ (x_(j+1) - 2 x_j + x_(j-1))/tau^2 = tilde(kappa)^2 x_j, quad
     tilde(kappa)^2 = (lambda sigma^2)/overline(eta), quad #link(<eq-recurrence-appendix>)[(4)] $ <eq-recurrence>
   a discrete analogue of $dot.double(x)(t) = tilde(kappa)^2 x(t)$, where:
-  - $x(t)$ is the position still held at time $t$;
+  - $x(t)$ is the position still to trade at time $t$;
   - $dot.double(x)(t)$ measures how the pace of trading $abs(dot(x)(t))$
     changes: zero at a constant pace, positive when a seller slows down;
   - $tilde(kappa)^2$ is the price of risk relative to the price of impact.
   Multiplying by $overline(eta)$ gives $overline(eta) dot.double(x)(t) =
   lambda sigma^2 x(t)$: at every moment, the change in the marginal impact
-  cost of trading balances the marginal risk cost of holding $x(t)$ shares.
-  The trader therefore sells fastest while the position is large and
-  slows down as it shrinks, so the holdings path is convex, bowing below
-  the straight line of constant-rate trading.
+  cost of trading balances the marginal risk cost of the $x(t)$ shares
+  still to trade. The trader therefore trades fastest while that position
+  is large and slows down as it shrinks, so the path bows toward zero
+  from the straight line of constant-rate trading: convex for a sale.
 
   Solving it gives a decay rate $theta$, the solution of
   $ 2/tau^2 (cosh(theta tau) - 1) = tilde(kappa)^2, quad #link(<eq-decay-appendix>)[(5)] $ <eq-decay>
   and the optimal liquidation trajectory
   $ x_j = X (sinh(theta(T - t_j))) / (sinh(theta T)), quad #link(<eq-holdings-appendix>)[(6)] $ <eq-holdings>
   for $j = 0, dots, N$, with the associated trade list
-  $ n_j = (2 sinh(1/2 theta tau)) / (sinh(theta T))
+  $ n_j = - (2 sinh(1/2 theta tau)) / (sinh(theta T))
     cosh(theta(T - t_(j-1/2))) X, quad #link(<eq-trades-appendix>)[(7)] $ <eq-trades>
   for $j = 1, dots, N$, where $t_(j-1/2) = (j - 1/2) tau$ is the midpoint
   of step $j$.
@@ -132,10 +135,7 @@
   $ x(t) = X (sinh(kappa(T - t))) / (sinh(kappa T)), $
   the solution of $dot.double(x)(t) = kappa^2 x(t)$, and the trading rate
   $n_j slash tau$ from (7) becomes
-  $ -dot(x)(t) = X kappa (cosh(kappa(T - t))) / (sinh(kappa T)). $
-  The minus sign makes a sale's rate positive, matching $n_k = x_(k-1) -
-  x_k$; a purchase has negative $n_k$ and rate, and every equation holds
-  unchanged.
+  $ dot(x)(t) = - X kappa (cosh(kappa(T - t))) / (sinh(kappa T)). $
 
   == The Shape of the Schedule
 
@@ -185,10 +185,13 @@
 
   == Buying as the Mirror Image
 
-  Since cost enters only through $n_k^2$, the objective is direction-blind:
-  accumulating a position just flips the boundary conditions to $x_0 = 0$,
-  $x_N = X$, giving the time-reversal of the sell schedule,
-  $ x_j = X (sinh(theta t_j)) / (sinh(theta T)). $
+  A purchase is the same problem with $X < 0$: the position still to
+  trade starts at $x_0 = X$ and rises to zero, so (6) and (7) apply
+  unchanged and every trade $n_j$ is positive. The risk sits on the shares
+  not yet bought, so a risk-averse buyer, like a seller, trades fastest at
+  the start. The shares held, $abs(X) + x_j$, follow
+  $ abs(X) (1 - (sinh(theta(T - t_j))) / (sinh(theta T))), $
+  a concave path that rises fastest early on.
 
   == Implementation: Numerical Stability
 
@@ -208,9 +211,9 @@
   Factoring out the dominant exponential leaves only non-positive
   exponents,
   $ x_j = X e^(-theta t_j) (1 - e^(-2 theta(T - t_j))) / (1 - e^(-2 theta T)), $
-  $ n_j = X (2 sinh(1/2 theta tau) e^(-theta t_(j-1/2))
+  $ n_j = - X (2 sinh(1/2 theta tau) e^(-theta t_(j-1/2))
     (1 + e^(-2 theta(T - t_(j-1/2))))) / (1 - e^(-2 theta T)). $
-  Computing the trades from (7) rather than as $x_(j-1) - x_j$ also avoids
+  Computing the trades from (7) rather than as $x_j - x_(j-1)$ also avoids
   cancellation late in an aggressive schedule, when consecutive holdings
   are nearly equal.
 
@@ -218,7 +221,7 @@
   loses its leading digits to cancellation; evaluating it as
   $-"expm1"(-u)$ keeps full precision for small $u$. At $theta = 0$
   exactly the expressions are $0 slash 0$, so that case returns the linear
-  schedule $x_j = X (T - t_j) slash T$, $n_j = X slash N$ directly.
+  schedule $x_j = X (T - t_j) slash T$, $n_j = -X slash N$ directly.
 ]
 
 #pagebreak()
@@ -228,64 +231,62 @@
 == Price Process from Continuous Time <eq-price-process-appendix>
 
 #link(<eq-price-process>)[Equation (1)]
-$ dif S_t = (alpha - g(v_t)) dif t + sigma dif W_t, $
-where $v_t$ is the trader's continuous trading rate. Discretizing via
+$ dif S_t = (alpha + g(v_t)) dif t + sigma dif W_t, $
+where $v_t$ is the trader's continuous trading rate (positive when
+buying). Discretizing via
 Euler-Maruyama, with $n_k slash tau$ standing in for $v_t$ and
 $W_(t_k) - W_(t_(k-1)) approx sqrt(tau) xi_k$ for the Brownian increment
 over step $k$, gives
-$ S_k = S_(k-1) + alpha tau + sigma sqrt(tau) xi_k - tau g(n_k/tau),
+$ S_k = S_(k-1) + alpha tau + sigma sqrt(tau) xi_k + tau g(n_k/tau),
   quad k = 1, dots, N. $
 
-== Capture Identity <eq-capture>
+== Shortfall Identity <eq-capture>
 
 #link(<eq-capture-main>)[Equation (2)]
 
-*Temporary impact.* The capture (total trading revenue) is
-$sum_k n_k tilde(S)_k$. Substituting the execution price
-$tilde(S)_k = S_(k-1) - h(n_k/tau)$ splits it into trading at the
-prevailing price minus the temporary-impact concession,
-$ sum_(k=1)^N n_k tilde(S)_k
-  = sum_(k=1)^N n_k S_(k-1) - sum_(k=1)^N n_k h(n_k/tau). $
+*Temporary impact.* Substituting the execution price
+$tilde(S)_k = S_(k-1) + h(n_k/tau)$ splits the shortfall into trading at
+the prevailing price plus the temporary-impact concession,
+$ sum_(k=1)^N n_k (tilde(S)_k - S_0)
+  = sum_(k=1)^N n_k (S_(k-1) - S_0) + sum_(k=1)^N n_k h(n_k/tau). $
 
-*Summation by parts.* Writing $n_k = x_(k-1) - x_k$ in the first sum and
-shifting the index of its first half by one,
-$ sum_(k=1)^N n_k S_(k-1)
-  &= sum_(k=0)^(N-1) x_k S_k - sum_(k=1)^N x_k S_(k-1) \
-  &= x_0 S_0 + sum_(k=1)^N x_k (S_k - S_(k-1)), $
-where the second line pairs the terms with the same $x_k$ and uses
-$x_N = 0$ to extend the first sum to $k = N$. With $x_0 = X$, the revenue
-is the initial book value $X S_0$ plus the price change of each step
-earned on the shares still held.
+*Summation by parts.* Writing $S_(k-1) - S_0$ as the sum of the price
+changes $S_i - S_(i-1)$ over $i < k$ and swapping the order of summation,
+$ sum_(k=1)^N n_k (S_(k-1) - S_0)
+  &= sum_(i=1)^(N-1) (S_i - S_(i-1)) sum_(k=i+1)^N n_k \
+  &= - sum_(i=1)^N x_i (S_i - S_(i-1)), $
+since the trades after step $i$ add up to $x_N - x_i = -x_i$ (the $i = N$
+term is zero because $x_N = 0$). Each price change counts against the
+position still to trade: a rise lowers a seller's cost ($x_i > 0$) and
+raises a buyer's ($x_i < 0$).
 
 *Price dynamics.* By equation (1) with zero drift, each price change is
-$S_k - S_(k-1) = sigma sqrt(tau) xi_k - tau g(n_k/tau)$. Substituting it
-gives the capture identity
-$ sum_(k=1)^N n_k tilde(S)_k = X S_0 + sum_(k=1)^N (sigma sqrt(tau) xi_k -
-  tau g(n_k/tau)) x_k - sum_(k=1)^N n_k h(n_k/tau). $
-
-*Expectation and variance.* The implementation shortfall is therefore
-$ X S_0 - sum_(k=1)^N n_k tilde(S)_k
+$S_k - S_(k-1) = sigma sqrt(tau) xi_k + tau g(n_k/tau)$. Substituting it
+gives the shortfall identity
+$ sum_(k=1)^N n_k (tilde(S)_k - S_0)
   = - sum_(k=1)^N sigma sqrt(tau) xi_k x_k
-  + sum_(k=1)^N tau x_k g(n_k/tau) + sum_(k=1)^N n_k h(n_k/tau). $
-Only the first sum is random. The $xi_k$ have zero mean, so it drops out
-of the expectation, giving $E(x)$; the last two sums are fixed by the
-schedule, and the $xi_k$ are independent with unit variance, so the
-variance is $V(x) = sigma^2 sum_k tau x_k^2$.
+  - sum_(k=1)^N tau x_k g(n_k/tau) + sum_(k=1)^N n_k h(n_k/tau). $
+
+*Expectation and variance.* Only the first sum is random. The $xi_k$
+have zero mean, so it drops out of the expectation, giving $E(x)$; the
+last two sums are fixed by the schedule, and the $xi_k$ are independent
+with unit variance, so the variance is $V(x) = sigma^2 sum_k tau x_k^2$.
 
 == Permanent-Impact Summation by Parts <eq-perm-impact-appendix>
 
 #link(<eq-perm-impact>)[Equation (3)]
 
-Since $n_k = x_(k-1) - x_k$,
-$ x_(k-1)^2 - x_k^2 = (x_(k-1) - x_k)(x_(k-1) + x_k) = n_k x_(k-1) + n_k x_k. $
-Summing over $k = 1, dots, N$ telescopes the left side to $x_0^2 - x_N^2 =
-X^2$, giving
-$ sum_k n_k x_(k-1) + sum_k n_k x_k = X^2. $
-Separately, $n_k(x_(k-1) - x_k) = n_k^2$, so
-$ sum_k n_k x_(k-1) - sum_k n_k x_k = sum_k n_k^2. $
-Subtracting the second identity from the first and dividing by 2,
-$ sum_k n_k x_k = 1/2 X^2 - 1/2 sum_k n_k^2. $
-Multiplying by $gamma$ gives equation (3).
+Since $n_k = x_k - x_(k-1)$,
+$ x_k^2 - x_(k-1)^2 = (x_k - x_(k-1))(x_k + x_(k-1)) = n_k x_k + n_k x_(k-1). $
+Summing over $k = 1, dots, N$ telescopes the left side to $x_N^2 - x_0^2 =
+-X^2$, giving
+$ sum_k n_k x_k + sum_k n_k x_(k-1) = -X^2. $
+Separately, $n_k(x_k - x_(k-1)) = n_k^2$, so
+$ sum_k n_k x_k - sum_k n_k x_(k-1) = sum_k n_k^2. $
+Adding the two identities and dividing by 2,
+$ sum_k n_k x_k = -1/2 X^2 + 1/2 sum_k n_k^2. $
+With $tau x_k g(n_k/tau) = gamma n_k x_k$, multiplying by $-gamma$ gives
+equation (3).
 
 == Optimal-Schedule Recurrence <eq-recurrence-appendix>
 
@@ -294,7 +295,7 @@ Multiplying by $gamma$ gives equation (3).
 Take general endpoints $x_0 = X_0$ and
 $x_N = X_T$. $U(x)$ is a sum of squares, a convex bowl with a single minimum
 where every partial derivative vanishes. For an interior $x_j$, the only
-terms containing it are $(x_(j-1) - x_j)^2$, $(x_j - x_(j+1))^2$, and
+terms containing it are $(x_j - x_(j-1))^2$, $(x_(j+1) - x_j)^2$, and
 $lambda sigma^2 tau x_j^2$, so
 $ (partial U)/(partial x_j) = overline(eta)/tau
   [-2(x_(j-1) - x_j) + 2(x_j - x_(j+1))]
@@ -371,8 +372,8 @@ and the re-planned path is exactly the remainder of equation (6).
 
 #link(<eq-trades>)[Equation (7)]
 
-Since $n_j = x_(j-1) - x_j$, equation (6) gives
-$ n_j = X / (sinh(theta T))
+Since $n_j = x_j - x_(j-1)$, equation (6) gives
+$ n_j = - X / (sinh(theta T))
   [sinh(theta(T - t_(j-1))) - sinh(theta(T - t_j))]. $
 The identity $sinh u - sinh v = 2 cosh((u+v) slash 2) sinh((u-v) slash 2)$,
 with $u - v = theta tau$ and $(u+v) slash 2 = theta(T - t_(j-1/2))$, gives
@@ -386,12 +387,13 @@ equation (7).
   stroke: 0.4pt,
   table.header([*symbol*], [*meaning*], [*units*]),
   [$X$],
-  [total shares to be liquidated (or accumulated)],
+  [signed size of the program: shares to liquidate ($X > 0$), or minus
+   the shares to accumulate ($X < 0$)],
   [shares],
 
   [$X_0$, $X_T$],
-  [holdings at the start and end of a schedule; $X_0 = X$ and $X_T = 0$
-   for a full liquidation],
+  [position still to trade at the start and end of a schedule; $X_0 =
+   X$ and $X_T = 0$ for a full program],
   [shares],
 
   [$T$],
@@ -403,7 +405,8 @@ equation (7).
   [day],
 
   [$x_k$, $x(t)$],
-  [shares still held after step $k$, or at time $t$],
+  [signed position still to trade after step $k$, or at time $t$; the
+   shares still held, for a liquidation],
   [shares],
 
   [$S_k$, $S(t)$],
@@ -419,8 +422,9 @@ equation (7).
   [i.i.d. shock in step $k$, zero mean and unit variance],
   [—],
 
-  [$n_k = x_(k-1) - x_k$],
-  [shares traded in step $k$],
+  [$n_k = x_k - x_(k-1)$],
+  [shares traded in step $k$: positive when buying, negative when
+   selling],
   [shares],
 
   [$n_k slash tau$],
@@ -434,12 +438,13 @@ equation (7).
   [\$/share],
 
   [$tilde(S)_k$],
-  [actual price per share received in step $k$],
+  [actual price per share paid (or received, when selling) in step $k$],
   [\$/share],
 
   [$h(v)$],
-  [temporary-impact function: the drop in average price per share
-   from trading at rate $v$ during one interval; does not carry
+  [temporary-impact function: the concession on the average price per
+   share from trading at rate $v$ during one interval, paid above the
+   price when buying and received below it when selling; does not carry
    forward into $S_k$],
   [\$/share],
 

@@ -38,17 +38,37 @@
   compounded rate. Any European payoff is worth its discounted
   risk-neutral expectation, so
   $ C(K) = e^(-r T) integral_K^infinity (S - K) q(S) dif S. quad (1) $
-  Differentiating in $K$,
-  $ (partial C)/(partial K) = -e^(-r T) bb(Q)(S_T > K),
+  The strike appears twice: in the lower limit and inside the integrand.
+  Differentiating such an integral takes the Leibniz rule. For a lower
+  limit $a(K)$,
+  $ dif/(dif K) integral_(a(K))^infinity f(S, K) dif S
+    = -f(a(K), K) a'(K) \
+    + integral_(a(K))^infinity (partial f)/(partial K) dif S. $
+  The first term comes from moving the limit, the second from changing
+  the integrand.
+
+  *First derivative.* Here $a(K) = K$, so $a'(K) = 1$, and $f(S, K) = (S -
+  K) q(S)$. The boundary term is $-(K - K) q(K) = 0$: the payoff is zero
+  at the strike, so moving the strike loses nothing there. Inside the
+  integral, $partial f slash partial K = -q(S)$. So
+  $ (partial C)/(partial K) = -e^(-r T) integral_K^infinity q(S) dif S. $
+  The remaining integral is the area under the density to the right of
+  $K$, which is the probability of finishing above $K$:
+  $ (partial C)/(partial K) = -e^(-r T) bb(Q)(S_T > K).
     quad #link(<eq-state-appendix>)[(2)] $ <eq-first>
-  $ (partial^2 C)/(partial K^2) = e^(-r T) q(K).
+
+  *Second derivative.* Apply the Leibniz rule to the integral in the
+  previous step. Now $f(S, K) = q(S)$ does not depend on $K$, so the
+  integrand term vanishes and only the boundary term, $-q(K)$, is left:
+  $ (partial^2 C)/(partial K^2) = -e^(-r T) dot (-q(K)) = e^(-r T) q(K).
     quad #link(<eq-state-appendix>)[(3)] $ <eq-second>
+
   The slope of the call curve is a discounted digital option, and its
   curvature is a discounted density: the price today of \$1 paid if $S_T$
   lands in $[K, K + dif K]$, per unit $dif K$. These are the Arrow–Debreu
   state prices. Nothing is assumed about the dynamics of $S$; the result
-  needs only calls at every strike. Puts give the same second derivative,
-  by put–call parity.
+  needs only calls at every strike. Puts give the same second derivative
+  (#link(<eq-put-appendix>)[appendix]).
 
   Two no-arbitrage conditions follow for free. Because $q >= 0$, the call
   curve is convex in $K$. Because $bb(Q)(S_T > K)$ lies in $[0, 1]$, its
@@ -194,6 +214,46 @@
 
 #pagebreak()
 
+= Questions
+
+== 1. Why is the probability written $bb(Q)$?
+
+$bb(Q)$ marks the _risk-neutral_ probability, to keep it apart from the
+real-world probability $bb(P)$. The convention comes from Harrison and
+Kreps @harrison1979, who showed that absence of arbitrage is equivalent to
+the existence of a probability measure, called $bb(Q)$, under which every
+price is a discounted expectation:
+$ "price" = e^(-r T) bb(E)^bb(Q) ["payoff"]. $
+This is the rule used in (1). The idea goes back to Cox and Ross
+@cox1976: since an option's price does not depend on investors' risk
+preferences, it can be computed as if everyone were risk-neutral. Under
+$bb(Q)$ every asset is expected to grow at the risk-free rate, so
+$bb(E)^bb(Q) [S_T] = F$. That is why the density recovered under
+Black–Scholes has mean 101.00, the forward, and not whatever return the
+stock is really expected to earn.
+
+*How $bb(Q)$ differs from $bb(P)$.* The price of \$1 paid in a state
+depends on two things: how likely the state is, and how much investors
+value a dollar in it. With $p(S)$ the real-world density of $S_T$ and
+$m(S)$ the value of a dollar in that state (the stochastic discount
+factor, or pricing kernel), the state price is $p(S) m(S)$. By (3) it is
+also $e^(-r T) q(S)$. Integrating both over all states fixes $e^(-r T) =
+bb(E)^bb(P) [m]$, so
+$ q(S) = (m(S))/(bb(E)^bb(P) [m]) p(S). $
+$bb(Q)$ reweights $bb(P)$ by how much each state matters to investors.
+A dollar is worth most in a crash, when it is scarce, so $m$ is high in
+bad states and $bb(Q)$ puts more weight there than $bb(P)$ does. The two
+agree only if investors are risk-neutral, with $m$ constant.
+
+*What this means for the numbers.* $bb(Q)(S_T < 90) = 13.5%$ under
+Black–Scholes is a price, not a forecast: a claim paying \$1 if
+$S_T < 90$ costs $e^(-r T) times 0.135 = 0.134$ dollars today. To turn it
+into a real-world probability one needs $m$, which option prices alone do
+not reveal without extra assumptions. Ross @ross2015 gives conditions under
+which they do.
+
+#pagebreak()
+
 = Appendix
 
 == State Prices <eq-state-appendix>
@@ -209,6 +269,21 @@ $ (partial^2 C)/(partial K^2) = e^(-r T) q(K). $
 For a put, $P(K) = e^(-r T) integral_0^K (K - S) q(S) dif S$ gives
 $partial P slash partial K = e^(-r T) bb(Q)(S_T < K)$. Put–call parity,
 $C - P = e^(-r T) (F - K)$, is linear in $K$, so $C$ and $P$ have the same
+second derivative.
+
+== Puts <eq-put-appendix>
+
+A put pays $K - S$ in the states below the strike:
+$ P(K) = e^(-r T) integral_0^K (K - S) q(S) dif S. $
+Now $K$ is the upper limit, and the Leibniz rule for an upper limit $b(K)$
+adds $+f(b(K), K) b'(K)$ instead of subtracting. The boundary term is
+again $(K - K) q(K) = 0$, and $partial f slash partial K = q(S)$, so
+$ (partial P)/(partial K) = e^(-r T) integral_0^K q(S) dif S
+  = e^(-r T) bb(Q)(S_T < K). $
+Differentiating once more leaves only the boundary term, $+q(K)$:
+$ (partial^2 P)/(partial K^2) = e^(-r T) q(K). $
+This matches (3). It also follows from put–call parity, $C - P = e^(-r T)
+(F - K)$: the difference is linear in $K$, so $C$ and $P$ have the same
 second derivative.
 
 == Black–Scholes <eq-bs-appendix>
@@ -278,6 +353,7 @@ which produces the alternating signs.
   [$r$], [continuously compounded rate],
   [$q(S)$], [risk-neutral density of $S_T$],
   [$bb(Q)$], [risk-neutral probability],
+  [$bb(P)$], [real-world probability],
   [$C(K)$, $P(K)$], [call and put prices],
   [$h$], [strike spacing],
   [$sigma$, $sigma(K)$], [volatility; implied volatility at $K$],
