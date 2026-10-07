@@ -7,9 +7,9 @@
 #show regex("^\[\d+\]"): it => text(fill: rgb("#1a73e8"))[#it]
 
 #align(center)[
+  #set par(spacing: 0.6em)
   #text(size: 20pt, weight: "bold")[A Primer on Optimal Execution]
 
-  #v(0.5em)
   #text(size: 12pt)[BayQuant]
 ]
 
