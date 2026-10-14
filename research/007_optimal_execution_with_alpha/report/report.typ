@@ -28,11 +28,12 @@
   position carried into the print. The last section compares the model
   with the round-trip version in Paleologo @paleologo2021.
 
-  The analysis is in continuous time. The discrete grid of the primer
-  returns only to derive the optimality equation and to check the closed
-  forms numerically. In continuous time, permanent impact contributes
-  $1/2 gamma (x(T)^2 - x(0)^2)$ whatever the schedule, so only the
-  temporary impact $eta$ shapes it.
+  We assume permanent impact is linear in the trading rate, with a
+  constant coefficient $gamma$. In continuous time, its
+  cost is then $1/2 gamma (x(T)^2 - x(0)^2)$ whatever the schedule,
+  because it depends only on the endpoints. In a liquidation, from
+  $x(0) = X$ to $x(T) = 0$, it equals $1/2 gamma X^2$, so only the
+  temporary impact $eta$ shapes the schedule.
 
   == The Objective
 
@@ -43,8 +44,8 @@
   - holding costs risk $lambda sigma^2 x^2$;
   - holding earns alpha $alpha(t) x$.
   The trader chooses the whole path to minimize
-  $ J[x] = integral_0^T [eta dot(x)^2 + lambda sigma^2 x^2 - alpha(t) x]
-    dif t. quad (1) $ <eq-objective>
+  $ J[x] = integral_0^T [eta dot(x)(t)^2 + lambda sigma^2 x(t)^2
+    - alpha(t) x(t)] dif t. quad (1) $ <eq-objective>
   This is the primer's $E + lambda V$ with the drift switched back on:
   every share held through a drift $alpha$ earns it, which lowers the
   expected shortfall by $integral alpha(t) x(t) dif t$.
@@ -52,14 +53,14 @@
   == The Optimality Equation
 
   To minimize a function of many variables, set every partial derivative
-  to zero. Split $[0, T]$ into $N$ buckets of length $tau$, with holdings
+  to zero: the first-order condition. Split $[0, T]$ into $N$ buckets of length $tau$, with holdings
   $x_1, dots, x_(N-1)$ free and the endpoints $x_0 = X$ and $x_N = 0$
   fixed. The objective becomes
   $ J = sum_k [eta/tau (x_(k-1) - x_k)^2 + lambda sigma^2 tau x_k^2
     - alpha_k tau x_k]. $
   A single holding $x_k$ appears in exactly four places: the trade into
   bucket $k$, the trade out of it, its own risk and its own alpha. Setting
-  the derivative to zero,
+  its derivative to zero,
   $ (2 eta)/tau (2 x_k - x_(k-1) - x_(k+1)) + 2 lambda sigma^2 tau x_k
     - alpha_k tau = 0, $
   and dividing by $2 eta tau$,
@@ -68,12 +69,18 @@
   The left side is the change in trading speed, from
   $(x_k - x_(k-1)) slash tau$ into bucket $k$ to $(x_(k+1) - x_k) slash
   tau$ out of it, divided by $tau$: a discrete acceleration. As $tau -> 0$
-  it becomes
-  $ dot.double(x) - kappa^2 x = - alpha(t)/(2 eta).
+  the first-order condition becomes, at every instant $t$,
+  $ dot.double(x) = kappa^2 x - alpha/(2 eta).
     quad #link(<eq-optimality-appendix>)[(2)] $ <eq-optimality>
-  This is a balance of forces. Risk ($kappa^2 x$) pushes the trader to
-  sell, alpha ($alpha slash 2 eta$) pushes the trader to hold, and
-  $dot.double(x)$, the change in trading speed, absorbs the difference.
+  This is a balance of forces. In a liquidation the trader is selling, so
+  the trading rate $dot(x)$ is negative, and $dot.double(x)$ is how that
+  rate changes: $dot.double(x) > 0$ means selling slows down, and
+  $dot.double(x) < 0$ means it speeds up. Two forces set it:
+  - Risk, $kappa^2 x$, is positive and largest when the position is large.
+    It slows the selling down over time, so the trader sells hardest while
+    the position, and its risk, is large.
+  - Alpha, $-alpha slash 2 eta$, is negative when $alpha > 0$. It speeds the
+    selling up over time, so the trader holds on now and sells later.
   Each discrete condition links only $x_(k-1)$, $x_k$ and $x_(k+1)$, so
   the discrete problem is a tridiagonal linear system.
 
@@ -209,7 +216,7 @@
   that do not meet at $t_0$: the left gives $alpha_0 t_0 slash kappa^2$
   and the right $alpha_0 t_0 (1 - t_0) slash kappa^2$. It also mixes
   $T -> infinity$ with $T = 1$. The limit $lambda -> 0$ of (5) is
-  $G -> t_(<) (T - t_(>)) slash T$, so the position is a tent, continuous
+  $G(t, s) -> t_(<) (T - t_(>)) slash T$, so the position is a tent, continuous
   at the print:
   $ x(t) = a/(2 eta) (t_(<) (T - t_(>)))/T.
     quad #link(<eq-tent-appendix>)[(10)] $ <eq-tent>
@@ -245,20 +252,43 @@
 
 #link(<eq-optimality>)[Equation (2)]
 
+The objective (1) is a functional: it assigns a number $J[x]$ to a whole
+path $x(t)$. Minimizing it is a problem in the calculus of variations, and
+the first-order condition is the Euler-Lagrange equation. For
+$J = integral_0^T L(x, dot(x), t) dif t$ it reads
+$ (partial L)/(partial x) - dif/(dif t) (partial L)/(partial dot(x)) = 0. $
+Here $L = eta dot(x)^2 + lambda sigma^2 x^2 - alpha x$, so
+$partial L slash partial x = 2 lambda sigma^2 x - alpha$ and
+$dif slash dif t (partial L slash partial dot(x)) = 2 eta dot.double(x)$.
+Setting their difference to zero,
+$ 2 lambda sigma^2 x - alpha - 2 eta dot.double(x) = 0. $
+Dividing by $2 eta$ and writing $kappa^2 = lambda sigma^2 slash eta$,
+$ dot.double(x) = kappa^2 x - alpha/(2 eta), $
+which is equation (2). The steps below derive this directly for our $L$,
+which is the general argument behind the formula.
+
 Suppose $x(t)$ minimizes (1), and perturb it to $x + epsilon h$, where
-$h(0) = h(T) = 0$ so the endpoints stay fixed. At the minimum no
-perturbation lowers $J$ to first order, so
-$ integral_0^T [2 eta dot(x) dot(h) + 2 lambda sigma^2 x h - alpha h]
-  dif t = 0 quad "for every" h. $
+$h(0) = h(T) = 0$ so the endpoints stay fixed. At the minimum the
+derivative of $J[x + epsilon h]$ with respect to $epsilon$ vanishes at
+$epsilon = 0$, so
+$ integral_0^T [2 eta dot(x)(t) dot(h)(t) + 2 lambda sigma^2 x(t) h(t)
+  - alpha(t) h(t)] dif t = 0 quad "for every" h. $
 Integrating the first term by parts, and using $h(0) = h(T) = 0$ to drop
-the boundary term, $integral dot(x) dot(h) dif t = - integral
-dot.double(x) h dif t$, so
-$ integral_0^T [-2 eta dot.double(x) + 2 lambda sigma^2 x - alpha] h
-  dif t = 0 quad "for every" h. $
+the boundary term, $integral dot(x)(t) dot(h)(t) dif t = - integral
+dot.double(x)(t) h(t) dif t$, so
+$ integral_0^T [-2 eta dot.double(x)(t) + 2 lambda sigma^2 x(t) - alpha(t)]
+  h(t) dif t = 0 quad "for every" h. $
 An integral that vanishes against every $h$ forces the bracket to vanish.
 Dividing by $-2 eta$ gives equation (2). Integration by parts plays the
 role of the discrete observation that $x_k$ appears in two neighboring
 trades.
+
+This condition is necessary. It is also sufficient here: $J$ is a convex
+functional, because $J[x + epsilon h]$ is quadratic in $epsilon$ with
+curvature $2 integral_0^T [eta dot(h)^2 + lambda sigma^2 h^2] dif t >= 0$
+for $eta > 0$ and $lambda sigma^2 >= 0$. A path that satisfies (2) with the
+endpoint conditions is therefore the global minimum, and it is unique when
+$eta > 0$.
 
 == Jump Conditions <eq-jump-appendix>
 
@@ -267,11 +297,11 @@ trades.
 Write the event alpha as $a delta(t - t_e)$ and include the event variance
 $lambda sigma_J^2 x(t_e)^2$. $dot(x)$ may jump at $t_e$, so integrate by
 parts separately on $[0, t_e]$ and $[t_e, T]$:
-$ integral_0^T dot(x) dot(h) dif t
+$ integral_0^T dot(x)(t) dot(h)(t) dif t
   = h(t_e) [dot(x)(t_e^-) - dot(x)(t_e^+)]
-  - integral_0^T dot.double(x) h dif t. $
+  - integral_0^T dot.double(x)(t) h(t) dif t. $
 The first-order change in $J$ is then
-$ integral_0^T [-2 eta dot.double(x) + 2 lambda sigma^2 x] h dif t
+$ integral_0^T [-2 eta dot.double(x)(t) + 2 lambda sigma^2 x(t)] h(t) dif t
   + h(t_e) [2 eta (dot(x)(t_e^-) - dot(x)(t_e^+))
   + 2 lambda sigma_J^2 x_e - a]. $
 Perturbations that vanish at $t_e$ give equation (2) away from the event.
