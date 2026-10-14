@@ -1,5 +1,7 @@
 # xpectral-research
 
+![Spectral decomposition](https://raw.githubusercontent.com/bayquant/xpectral-research/main/assets/xpectral_banner.gif)
+
 Notebook-driven quant/data-science research.
 
 ## Setup
