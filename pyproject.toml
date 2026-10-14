@@ -11,8 +11,8 @@ dependencies = [
     "matplotlib>=3.8",
     "plotly>=6.9.0",
     "kaleido>=1.4.0",
-    "xpectral-quant>=1.0.1",
-    "xpectral-chart>=1.0.0",
+    "xpectral-quant>=2.0.0",
+    "xpectral-chart>=2.0.0",
     "riskfolio-lib>=7.3.0",
 ]
 
@@ -40,4 +40,4 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["xpectral"]
+known-first-party = ["xpectral_chart", "xpectral_quant"]
